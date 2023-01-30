@@ -15,7 +15,7 @@ console([]) ->
   io:format("   Usage := :ft.console [ args <filename> ] ~n"),
   io:format("    args := command | command args ~n"),
   io:format(" command := parse | lex | read | fst | snd | file ~n~n~n"),
-  io:format(" Sample: :ft.console ['parse','file','priv/forms/input.form' ]  ~n~n"),
+  io:format(" Sample: :ft.console ['parse','file','priv/form/input.form' ]  ~n~n"),
    0;
 
 console(S) ->

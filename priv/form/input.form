@@ -13,9 +13,9 @@ begin pid = options.pid
     | coorOpt = dict
     | coorOpt.users = doc.coordination
     | document "inputOrder" name
-          [ butOk            title postback { postback :inputOrder doc.id pid }
-          | butCancel  "Скасувати" postback { :cancel postback :inputOrder doc.id pid }
-          | butTemplate "Шаблон" postback { :templates :create :inputOrder } on postback=:create ]
+    [ butOk title postback { postback :inputOrder doc.id pid }
+    | butCancel  "Скасувати" postback { :cancel postback :inputOrder doc.id pid }
+    | butTemplate "Шаблон" postback { :templates :create :inputOrder } on postback=:create ]
     [ project comboLookup "Відхилено з коментарем"
     | urgent bool "Терміново" required
     | id string "Номер документа"

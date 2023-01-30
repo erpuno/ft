@@ -1,0 +1,78 @@
+#
+# BPE syntax highlighting
+#
+# Author: Maksym Sokhatskyi
+# Version: 29 Jan, 2023
+#
+
+wholechars abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-*0123456789
+
+context default
+    keyword whole hrl white
+    keyword whole bpe magenta
+    keyword whole kvs magenta
+    keyword whole form magenta
+    keyword whole broadcastEvent yellow
+    keyword whole messageEvent yellow
+    keyword whole request yellow
+    keyword whole import magenta
+    keyword whole record magenta
+    keyword whole process magenta
+    keyword whole module magenta
+    keyword whole route magenta
+    keyword whole event magenta
+    keyword whole notice magenta
+    keyword whole document yellow
+    keyword whole broadcast yellow
+    keyword whole asyncEvent yellow
+    keyword whole match magenta
+    keyword whole stop cyan
+    keyword whole reply cyan
+    keyword whole spawn yellow
+    keyword whole general yellow
+    keyword whole binary cyan
+    keyword whole boolean cyan
+    keyword whole list cyan
+    keyword whole datetime cyan
+    keyword whole ERP cyan
+    keyword whole term cyan
+    keyword whole match cyan
+    keyword whole string cyan
+    keyword whole next cyan
+    keyword whole generate_history cyan
+    keyword whole routeTo cyan
+    keyword whole routeFrom cyan
+    keyword whole new cyan
+    keyword whole action cyan
+    keyword whole notify cyan
+    keyword whole comboLookup cyan
+    keyword whole comboLookupVec cyan
+    keyword whole bool cyan
+    keyword whole calendar cyan
+    keyword whole textarea cyan
+    keyword whole number cyan
+    keyword whole buttons cyan
+    keyword whole fields cyan
+    keyword whole generic yellow
+    keyword whole begin yellow
+    keyword whole end yellow
+    keyword whole call yellow
+    keyword whole result yellow
+
+    keyword #' brightmagenta
+    keyword ' brightmagenta
+    keyword , brightmagenta
+
+    keyword ( brightcyan
+    keyword ) brightcyan
+
+# Keyword declarations and keywords
+
+    keyword :\[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-*0123456789\] white
+    keyword &\[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-*0123456789\] white
+
+# Comments
+
+context " " green
+    keyword \\" green
+    keyword \\\\ green

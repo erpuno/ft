@@ -1,0 +1,42 @@
+module mia kvs
+import person
+import project
+import assistantMark
+record inputOrder hrl
+begin id = [] : [] + binary
+    | guid = [] : list
+    | urgent = [] : [] + boolean
+    | date = [] : [] + datetime
+    | xml = [] : [] + binary
+    | hash = [] : binary + list
+    | signature = [] : binary + list
+    | document_type = "Вхідний документ" : term
+    | nomenclature = [] : term
+    | category = [] : list
+    | corr = [] : list
+    | branch = [] : list
+    | head = [] : [] | ERP.Person
+    | signed = [] : list
+    | number_out = [] : list
+    | date_out = [] : datetime
+    | content = [] : list
+    | note = [] : list
+    | dueDate = [] : [] + datetime
+    | dueDateTime = [] : list
+    | to = [] : [] + ERP.Person
+    | main_sheets = [] : list
+    | add_sheets = [] : list
+    | device = [] : list
+    | registered_by = [] : [] + ERP.Person
+    | coordination = list
+    | topic = [] : [] | binary
+    | attachments = [] : list term
+    | seq_id = [] : list
+    | reject_comment = [] : binary
+    | created_by = [] : term
+    | created = [] : term
+    | modified_by = [] : term
+    | modified = [] : term
+    | bizTask_initiator = [] : term
+    | toAttention = ERP.assistantMark : term
+    | project = ERP.project : ERP.project end

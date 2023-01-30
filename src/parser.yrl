@@ -1,10 +1,13 @@
 % Максим Сохацький ДП "ІНФОТЕХ"
 
-mod -> 'module' name modspec clauses : {module,'$2','$3','$4'}.
-modspec -> 'bpe' : '$1'.
-modspec -> 'form' : '$1'.
+mod -> 'module' name lib clauses : {module,'$2','$3','$4'}.
+lib -> 'kvs' : '$1'.
+lib -> 'bpe' : '$1'.
+lib -> 'form' : '$1'.
 clauses -> clause : ['$1'].
 clauses -> clause clauses : ['$1'|'$2'].
+clause -> 'import' name : {import, '$2'}.
+clause -> 'record' name args 'begin' decls 'end' : {record, '$2', args('$3'), '$5'}.
 clause -> 'event'  name args 'begin' decls 'end' : {event,  '$2', args('$3'), '$5'}.
 clause -> 'route'  name args 'begin' decls 'end' : {route,  '$2', args('$3'), '$5'}.
 clause -> 'form'   name args 'begin' decls 'end' : {form,   '$2', args('$3'), '$5'}.
@@ -14,20 +17,20 @@ args -> word args : ['$1'|'$2'].
 name -> word : {name,name('$1')}.
 decl -> args : '$1'.
 decl -> word '=' args : {assign,'$1','$3'}.
-decl -> 'document' word word but_decl field_decl : {document,word('$2'),word('$3'),'$4','$5'}.
+decl -> 'document' word word buttons fields : {document,word('$2'),word('$3'),'$4','$5'}.
 decl -> 'result' '[' decls ']' args : {result,'$3','$5'}.
 decls -> decl : [{decl,'$1'}].
 decls -> decl '|' decls : [{decl,'$1'}|'$3'].
-field_decl -> '[' field_decl_inner ']' : {fields,'$2'}.
-field_decl_inner -> args : [{field,'$1'}].
-field_decl_inner -> args '|' field_decl_inner : [{field,'$1'}|'$3'].
-but_decl -> '[' but_decl_inner ']' : {buttons,'$2'}.
-but_decl_inner -> args : [{button,'$1'}].
-but_decl_inner -> args '|' but_decl_inner : [{button,'$1'}|'$3'].
+fields -> '[' field ']' : {fields,'$2'}.
+field -> args : [{field,'$1'}].
+field -> args '|' field : [{field,'$1'}|'$3'].
+buttons -> '[' button ']' : {buttons,'$2'}.
+button -> args : [{button,'$1'}].
+button -> args '|' button : [{button,'$1'}|'$3'].
 
 Rootsymbol mod.
-Nonterminals mod spec clauses args clause name decl decls specs modspec but_decl field_decl but_decl_inner field_decl_inner.
-Terminals word '=' '|' '[' ']' 'document' 'module' 'event' 'route' 'notice' 'form' 'bpe' 'begin' 'end' 'result'.
+Nonterminals mod lib clauses args clause name decl decls button field buttons fields.
+Terminals word '=' '|' '[' ']' 'document' 'module' 'event' 'route' 'notice' 'form' 'bpe' 'kvs' 'begin' 'end' 'result' 'record' 'import'.
 Erlang code.
 
 word({_,_,Name}) -> Name.
