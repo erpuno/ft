@@ -1,0 +1,13 @@
+module internal bpe
+begin event action msg proc
+    | route routeTo req ft
+    | route routeFrom req ft
+    | notice notify req end
+
+route routeTo
+begin (*,I): | (I,gwC):O,T,fromExecutors
+    | (*,G):G,[];P,RTASM;P,[],toCertifiers end
+
+route routeFrom
+begin (C,I):C,[] | (I,gwC): | (gwR,I):G,[];O,T | (*,G):
+    | (*,A):G,[];O,RTAS;A,T;I,R;U,RTAS;A,A;S,S;T,AS end

@@ -1,0 +1,11 @@
+CODE;FIELD
+R;registered_by
+M;modified_by
+BI;bizTask_initiator
+I;initiator
+E;executor
+A;approvers
+T;target
+S;signatory
+To;to
+Tn;target_notify

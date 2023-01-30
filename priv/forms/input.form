@@ -1,0 +1,38 @@
+module inputForm form
+begin form new name doc options
+    | event id end
+
+event id begin ERP.inputOrder end
+
+form new name doc:ERP.inputOrder options
+begin pid = options.pid
+    | user = options.user
+    | regBind = orgPath user
+    | pid = options.pid
+    | corrOpt = options
+    | corrOpt.postback = postback
+    | corrOpt.required = true
+    | coorOpt = dict
+    | coorOpt.users = doc.coordination
+    | document "inputOrder" name
+          [ butOk            title postback { postback :inputOrder doc.id pid }
+          | butCancel  "Скасувати" postback { :cancel postback :inputOrder doc.id pid }
+          | butTemplate "Шаблон" postback { :templates :create :inputOrder } on postback=:create ]
+    [ project comboLookup "Відхилено з коментарем"
+    | urgent bool "Терміново" required
+    | id string "Номер документа"
+    | seq_id string "Унікальний номер"
+    | to comboLookupVec "Первинний розгляд" CRM.Forms.Person regBind
+    | nomenclature comboLookup "Номенклатура" CRM.Forms.DeedCat "/crm/deeds"
+    | document_type string "Вид документа"
+    | signed string "Підписав"
+    | generic corr controlTask corrOpt
+    | date calendar "Дата документа"
+    | dueDate calendar "Термін виконання" min=:erlang.date() default=FormatDate.add_days(29)
+    | note textarea "Примітка"
+    | add_sheets number "К-ть аркушів додатків"
+    | bizTask_initiator comboLookupVec CRM.Forms.Person "/acc"
+    | modified_by comboLookupVec CRM.Forms.Person "/acc"
+    | registered_by comboLookup "Реєстратор" required CRM.Forms.Person regBind default=user
+    | generic topic controlTask corrOpt
+    | generic coordination doc.coordination ] end

@@ -1,0 +1,10 @@
+module resolution bpe
+begin event action msg proc
+    | route routeTo req ft
+    | route routeFrom req ft
+    | notice notify req end
+
+route routeTo
+begin (*,D):R,I,perm
+    | (gwV,S):S,I;T,I
+    | (*,E): end

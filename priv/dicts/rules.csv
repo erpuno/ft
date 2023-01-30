@@ -1,0 +1,4 @@
+ID;CREATOR;ENDPOINT;DESC;TYPE;SUBJ_COND;OBJ_COND;MATCH;SUBJ;OBJ;VALUES
+1;;;;;;form_check;;{subject_employee,[],[executor],[],any,[],"MIA:TEST",[]};{object_form,docTemplate,[name]};fields
+2;;;;;;form_check;;{subject_employee,[],[register,executor,head],[],any,[],"MIA:TEST",[]};{object_form,rightDelegation,[delegateTo,startTime,endTime,tempDutiesPerform]};fields
+3;;;;;;form_check;;{subject_employee,[],[admin,securityAdmin],[],any,[],"MIA:TEST",[]};{object_form,assistant,[head,assistants,startTime,endTime]};fields

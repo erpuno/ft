@@ -1,0 +1,9 @@
+{application, ft,
+ [
+  {description, "FT FormalTalk ERP.UNO Compiler"},
+  {vsn, "3.1.0"},
+  {registered, []},
+  {applications, [kernel,stdlib]},
+  {mod, { ft, []}},
+  {env, []}
+ ]}.

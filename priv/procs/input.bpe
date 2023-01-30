@@ -1,0 +1,81 @@
+module input bpe
+begin event action msg proc | route routeTo req ft | route routeFrom req ft | notice notify req end
+
+event action broadcastEvent begin result [ ] proc stop end
+event action messageEvent process userStarted=system begin result [ ] proc stop end
+event action messageEvent payload={next,*} begin output.bpe.action msg proc end
+event action messageEvent name=DocumentStatistics payload=payload
+begin call personal_stat proc.id executed payload | result [ ] proc stop end
+
+event action messageEvent name=RemoveDocumentStatistics payload=payload
+begin call remove_personal_stat proc.id executed payload | result [ ] proc stop end
+
+event action messageEvent name=Implementation
+begin doc = proc.docs.hd | doc.project = call projAction execute doc.project msg.payload []
+    | proc.docs = [doc] | result [ next { proc.id } ] proc reply end
+
+event action messageEvent name=Executed
+begin result [ generate_history { executed proc.id msg.sender.id proc.docs.hd } spawn Elixir.History
+             | next { proc.id } ] proc reply end
+
+event action messageEvent name=TaskCreated
+begin newdoc = proc.docs.hd
+    | doc.modified_by = [doc.modified,msg.payload.notify]
+    | proc.docs = [doc]
+    | result [ ] proc stop end
+
+event action messageEvent begin result [ ] proc stop end
+
+event action asyncEvent name=ImplementationBlock payload=payload:ERP.bizTask
+begin gw_block msg.sender.id "gwConfirmation" proc.id
+    | newDoc = proc.docs.hd
+    | newDoc.modified_by = [payload.initiator,payload.executor,payload.subexecutors,payload.notify,payload.control_by]
+    | newProc = proc
+    | newProc.docs = [newDoc]
+    | result [ ] newProc stop end
+event action asyncEvent begin call "OutputProc.action" action msg proc end
+
+event action request from=Created to=Registration
+begin end
+
+event action request from=Registration to=gwNeedsDetermination
+begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
+    | indexUrgent newProc newDoc | newState = call actionGen req proc newProc
+    | result [ general req newState newDoc | stop ] newState reply proc.executors end
+
+event action request from=InitialConsideration
+begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
+    | newProc = call actionGen req proc newProc
+    | result [ general req newProc newDoc | stop ] newProc reply proc.executors end
+
+event action request from=Implementation to=gwConfirmation
+begin newDoc = proc.docs.hd
+    | newProc = proc | newProc.docs = [newDoc] | newProc = call actionGen req proc newProc
+    | result [ general req newProc newDoc | next proc.id ] newProc reply proc.executors end
+
+event action request to=Grouping
+begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
+    | broadcast "Complete" | newProc = call actionGen req proc newProc
+    | result [ general req newProc newDoc | stop ] newProc reply proc.executors end
+
+event action request to=gwRejected
+begin newProc = call actionGen req proc proc
+    | result [ general req newPproc newDoc | next proc.id ] newProc reply proc.executors end
+
+event action request from=gwRejected to=Implementation
+begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
+    | broadcast "ImplementationRejected" | newProc = call actionGen req proc newProc
+    | result [ general req newProc newDoc | stop ] newProc reply proc.executors end
+
+event action request to=Archive
+begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
+    | unindexUrgent proc newDoc | newState = call actionGen req proc newProc
+    | result [ general req newState newDoc | stop ] newState reply proc.executors end
+
+route routeTo
+begin (Cr,R):R,[] | (R,gwND):O,R | (gwND,Det):D,[] | (*,InC):A,To
+    | (gwC,I):A,To,toExecutors | (*,G):G,[];P,M | (*,A):A,[] end
+
+route routeFrom
+begin (R,gwND):R,[] | (Det,InC):D,[] | (InC,I):A,To,fromExecutors | (I,gwC):A,To,fromExecutors
+    | (gwR,I):G,[] | (*,G):A,To | (*,A):G,[];O,R;U,RTo;R,[];D,[] end

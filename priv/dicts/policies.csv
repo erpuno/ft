@@ -1,0 +1,3 @@
+ID;CREATOR;ENDPOINT;DESC;COMB;OBJ;RULES
+1;;create;;;{object_form,docTemplate,[]};[1]
+2;;toAttention;;;{object_process,"Elixir.Internal.Proc",agreement,false,[]};[1,2]
