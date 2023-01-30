@@ -73,8 +73,8 @@ begin doc = proc.docs.hd | doc.project = call projAction execute doc.project msg
     | proc.docs = [doc] | result [ next { proc.id } ] proc reply end
 
 event action messageEvent name=Executed
-begin result [ generate_history { executed proc.id msg.sender.id proc.docs.hd } spawn Elixir.History
-             | next { proc.id } ] proc reply end
+begin result [ generate_history { executed proc.id msg.sender.id proc.docs.hd }
+               spawn Elixir.History | next { proc.id } ] proc reply end
 
 event action request to=Archive
 begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
@@ -132,7 +132,8 @@ begin pid = options.pid
     | document "inputOrder" name
           [ butOk            title postback { postback :inputOrder doc.id pid }
           | butCancel  "Скасувати" postback { :cancel postback :inputOrder doc.id pid }
-          | butTemplate "Шаблон" postback { :templates :create :inputOrder } on postback=:create ]
+          | butTemplate "Шаблон" postback { :templates :create :inputOrder }
+                                 on postback=:create ]
     [ project comboLookup "Відхилено з коментарем"
     | urgent bool "Терміново" required
     | id string "Номер документа"
