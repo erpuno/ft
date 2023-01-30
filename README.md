@@ -54,10 +54,6 @@ BPE module sample:
 
 ```
 module input bpe
-begin event action msg proc
-    | route routeTo req ft
-    | route routeFrom req ft
-    | notice notify req end
 
 event action broadcastEvent begin result [ ] proc stop end
 event action messageEvent process userStarted=system begin result [ ] proc stop end
@@ -114,8 +110,6 @@ FORM module sample:
 
 ```
 module inputForm form
-begin form new name doc options
-    | event id end
 
 event id begin ERP.inputOrder end
 
