@@ -1,5 +1,4 @@
 module input bpe
-begin event action msg proc | route routeTo req ft | route routeFrom req ft | notice notify req end
 
 event action broadcastEvent begin result [ ] proc stop end
 event action messageEvent process userStarted=system begin result [ ] proc stop end

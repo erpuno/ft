@@ -1,6 +1,6 @@
 % Максим Сохацький ДП "ІНФОТЕХ"
 
-mod -> 'module' name modspec 'begin' specs 'end' clauses : {module,'$2','$3','$5','$7'}.
+mod -> 'module' name modspec clauses : {module,'$2','$3','$4'}.
 modspec -> 'bpe' : '$1'.
 modspec -> 'form' : '$1'.
 clauses -> clause : ['$1'].
@@ -12,12 +12,6 @@ clause -> 'notice' name args 'begin' decls 'end' : {notify, '$2', args('$3'), '$
 args -> '$empty' : [].
 args -> word args : ['$1'|'$2'].
 name -> word : {name,name('$1')}.
-spec -> 'form'   args : {form,'$2'}.
-spec -> 'event'  args : {event,'$2'}.
-spec -> 'route'  args : {route,'$2'}.
-spec -> 'notice' args : {notify,'$2'}.
-specs -> spec : [{spec,'$1'}].
-specs -> spec '|' specs : [{spec,'$1'}|'$3'].
 decl -> args : '$1'.
 decl -> word '=' args : {assign,'$1','$3'}.
 decl -> 'document' word word but_decl field_decl : {document,word('$2'),word('$3'),'$4','$5'}.

@@ -1,6 +1,4 @@
 module inputForm form
-begin form new name doc options
-    | event id end
 
 event id begin ERP.inputOrder end
 

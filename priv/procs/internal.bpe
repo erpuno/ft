@@ -1,8 +1,4 @@
 module internal bpe
-begin event action msg proc
-    | route routeTo req ft
-    | route routeFrom req ft
-    | notice notify req end
 
 route routeTo
 begin (*,I): | (I,gwC):O,T,fromExecutors
