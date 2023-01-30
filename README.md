@@ -86,6 +86,30 @@ begin (Cr,R):R,[] | (R,gwND):O,R | (gwND,Det):D,[] | (*,InC):A,To
     | (gwC,I):A,To,toExecutors | (*,G):G,[];P,M | (*,A):A,[] end
 ```
 
+```
+ {:event, {:name, "action"},
+     {:args, ["request", "from=gwRejected", "to=Implementation"]},
+     [
+       decl: {:assign, {:word, 65, "newDoc"}, [{:word, 65, "proc.docs.hd"}]},
+       decl: {:assign, {:word, 65, "newProc"}, [{:word, 65, "proc"}]},
+       decl: {:assign, {:word, 65, "newProc.docs"}, [{:word, 65, "[newDoc]"}]},
+       decl: {:result,
+        [
+          decl: [
+            {:word, 48, "general"},
+            {:word, 48, "req"},
+            {:word, 48, "newProc"},
+            {:word, 48, "newDoc"}
+          ],
+          decl: [{:word, 48, "stop"}]
+        ],
+        [
+          {:word, 48, "newProc"},
+          {:word, 48, "reply"},
+          {:word, 48, "proc.executors"}
+        ]}
+```
+
 FORM module sample:
 
 ```
