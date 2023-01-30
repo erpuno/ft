@@ -1,9 +1,8 @@
 FT: FormalTalk ERP.UNO Compiler
 ===============================
 
-FormalTalk is the DSL designed to cover the needs of BPE,
-FORM and KVS programming -- the core libraries of ERP.UNO
-State Enterprise open-source stack.
+FormalTalk is the LEEX/YECC front-end to DSL of BPE, FORM and KVS
+programming -- the core libraries of ERP.UNO State Enterprise open-source stack.
 
 FT is the FormalTalk ERP.UNO compiler that compiles BPE and FORM
 modules defined in FormalTalk language to BEAM byte-code that is
