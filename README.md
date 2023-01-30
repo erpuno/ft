@@ -36,12 +36,6 @@ FormalTalk AST:
 ```
 > :ft.console ['parse','file','priv/procs/input.bpe' ]
 {:module, {:name, "input"}, {:bpe, 1},
-  [
-    spec: {:event, [{:word, 2, "action"}, {:word, 2, "msg"}, {:word, 2, "proc"}]},
-    spec: {:route, [{:word, 2, "routeTo"}, {:word, 2, "req"}, {:word, 2, "ft"}]},
-    spec: {:route, [{:word, 2, "routeFrom"}, {:word, 2, "req"}, {:word, 2, "ft"}]},
-    spec: {:notify, [{:word, 2, "notify"}, {:word, 2, "req"}]}
-  ],
 ...
     {:route, {:name, "routeFrom"}, {:args, []},
      [
