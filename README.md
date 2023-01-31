@@ -70,61 +70,6 @@ begin id = seq 10 : term
   ]}}
 ```
 
-BPE module sample:
-
-```
-module input bpe
-
-event action broadcastEvent begin result [ ] proc stop end
-event action messageEvent process userStarted=system begin result [ ] proc stop end
-event action messageEvent payload={next,*} begin output.bpe.action msg proc end
-event action messageEvent name=DocumentStatistics payload=payload
-begin call personal_stat proc.id executed payload | result [ ] proc stop end
-
-event action messageEvent name=RemoveDocumentStatistics payload=payload
-begin call remove_personal_stat proc.id executed payload | result [ ] proc stop end
-
-event action messageEvent name=Implementation
-begin doc = proc.docs.hd | doc.project = call projAction execute doc.project msg.payload []
-    | proc.docs = [doc] | result [ next { proc.id } ] proc reply end
-
-event action messageEvent name=Executed
-begin result [ generate_history { executed proc.id msg.sender.id proc.docs.hd }
-               spawn Elixir.History | next { proc.id } ] proc reply end
-
-event action request to=Archive
-begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
-    | unindexUrgent proc newDoc | newState = call actionGen req proc newProc
-    | result [ general req newState newDoc | stop ] newState reply proc.executors end
-
-route routeTo
-begin (Cr,R):R,[] | (R,gwND):O,R | (gwND,Det):D,[] | (*,InC):A,To
-    | (gwC,I):A,To,toExecutors | (*,G):G,[];P,M | (*,A):A,[] end
-```
-
-```
- {:event, {:name, "action"},
-     {:args, ["request", "from=gwRejected", "to=Implementation"]},
-     [
-       decl: {:assign, {:word, 65, "newDoc"}, [{:word, 65, "proc.docs.hd"}]},
-       decl: {:assign, {:word, 65, "newProc"}, [{:word, 65, "proc"}]},
-       decl: {:assign, {:word, 65, "newProc.docs"}, [{:word, 65, "[newDoc]"}]},
-       decl: {:result,
-        [
-          decl: [
-            {:word, 48, "general"},
-            {:word, 48, "req"},
-            {:word, 48, "newProc"},
-            {:word, 48, "newDoc"}
-          ],
-          decl: [{:word, 48, "stop"}]
-        ],
-        [
-          {:word, 48, "newProc"},
-          {:word, 48, "reply"},
-          {:word, 48, "proc.executors"}
-        ]}
-```
 
 FORM module sample:
 
@@ -197,6 +142,62 @@ begin pid = options.pid
             ["{", ":templates", ":create", ":inputOrder", "}", "on",
              "postback=:create"]}
          ]},
+```
+
+BPE module sample:
+
+```
+module input bpe
+
+event action broadcastEvent begin result [ ] proc stop end
+event action messageEvent process userStarted=system begin result [ ] proc stop end
+event action messageEvent payload={next,*} begin output.bpe.action msg proc end
+event action messageEvent name=DocumentStatistics payload=payload
+begin call personal_stat proc.id executed payload | result [ ] proc stop end
+
+event action messageEvent name=RemoveDocumentStatistics payload=payload
+begin call remove_personal_stat proc.id executed payload | result [ ] proc stop end
+
+event action messageEvent name=Implementation
+begin doc = proc.docs.hd | doc.project = call projAction execute doc.project msg.payload []
+    | proc.docs = [doc] | result [ next { proc.id } ] proc reply end
+
+event action messageEvent name=Executed
+begin result [ generate_history { executed proc.id msg.sender.id proc.docs.hd }
+               spawn Elixir.History | next { proc.id } ] proc reply end
+
+event action request to=Archive
+begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
+    | unindexUrgent proc newDoc | newState = call actionGen req proc newProc
+    | result [ general req newState newDoc | stop ] newState reply proc.executors end
+
+route routeTo
+begin (Cr,R):R,[] | (R,gwND):O,R | (gwND,Det):D,[] | (*,InC):A,To
+    | (gwC,I):A,To,toExecutors | (*,G):G,[];P,M | (*,A):A,[] end
+```
+
+```
+ {:event, {:name, "action"},
+     {:args, ["request", "from=gwRejected", "to=Implementation"]},
+     [
+       decl: {:assign, {:word, 65, "newDoc"}, [{:word, 65, "proc.docs.hd"}]},
+       decl: {:assign, {:word, 65, "newProc"}, [{:word, 65, "proc"}]},
+       decl: {:assign, {:word, 65, "newProc.docs"}, [{:word, 65, "[newDoc]"}]},
+       decl: {:result,
+        [
+          decl: [
+            {:word, 48, "general"},
+            {:word, 48, "req"},
+            {:word, 48, "newProc"},
+            {:word, 48, "newDoc"}
+          ],
+          decl: [{:word, 48, "stop"}]
+        ],
+        [
+          {:word, 48, "newProc"},
+          {:word, 48, "reply"},
+          {:word, 48, "proc.executors"}
+        ]}
 ```
 
 Credits
