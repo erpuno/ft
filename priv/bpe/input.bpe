@@ -15,6 +15,7 @@ begin doc = proc.docs.hd | doc.project = call projAction execute doc.project msg
 
 event action messageEvent name=Executed
 begin result [ generate_history { executed proc.id msg.sender.id proc.docs.hd } spawn Elixir.History
+             | makeList ok
              | next { proc.id } ] proc reply end
 
 event action messageEvent name=TaskCreated
