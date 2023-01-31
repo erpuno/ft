@@ -1,0 +1,11 @@
+module person kvs
+import location
+import organization
+record Person
+begin id = seq : term
+    | cn = [] : [] + binary
+    | name = [] : [] + binary
+    | displayName = [] : [] + binary
+    | location = [] : ERP.Loc
+    | hours = 0 : integer
+    | type = [] : term end

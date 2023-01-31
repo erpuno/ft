@@ -1,0 +1,2 @@
+module dict kvs
+record dict begin id = [] : list | type = [] : binary | name = [] : binary + list end

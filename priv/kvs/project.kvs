@@ -1,0 +1,13 @@
+module project kvs
+record project
+begin approvers = [] : term
+    | signer = [] : binary + list
+    | comment = [] : binary + list
+    | creator = [] : binary + list
+    | executors = [] : term
+    | control = [] : list
+    | notified = [] : list
+    | familiarized = [] : list
+    | certifier = [] : list
+    | sentOrgs = [] : list
+    | sentOutput = [] : list end

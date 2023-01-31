@@ -1,0 +1,9 @@
+module assistant kvs
+record assistant
+begin id = [] : list
+    | head = [] : binary + list
+    | assistants = [] : binary + list
+    | startTime = [] : [] + datetime
+    | endTime = [] : [] + datetime
+    | status = active : :active + :canceled + :expired
+end

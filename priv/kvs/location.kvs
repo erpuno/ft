@@ -1,0 +1,9 @@
+module location kvs
+import dict
+record Loc
+begin id = [] : list
+    | code = [] : list
+    | country = [] : list
+    | city = [] : list
+    | address = [] : list
+    | type = [] : list end

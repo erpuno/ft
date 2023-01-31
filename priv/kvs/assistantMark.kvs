@@ -1,0 +1,4 @@
+module assistantMark kvs
+import assistant
+record assistantMark
+begin id = [] : list | status = [] : [] + atom | assistant = [] : ERP.assistant end
