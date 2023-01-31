@@ -1,16 +1,16 @@
 module input bpe
 
 event action broadcastEvent begin result [ ] proc stop end
-event action messageEvent process userStarted=system begin result [ ] proc stop end
+event action messageEvent process userStarted=system:string begin result [ ] proc stop end
 event action messageEvent payload={next,*} begin output.bpe.action msg proc end
 event action messageEvent name=DocumentStatistics payload=payload
-begin call personal_stat proc.id executed payload | result [ ] proc stop end
+begin personal_stat proc.id executed payload | result [ ] proc stop end
 
 event action messageEvent name=RemoveDocumentStatistics payload=payload
-begin call remove_personal_stat proc.id executed payload | result [ ] proc stop end
+begin remove_personal_stat proc.id executed payload | result [ ] proc stop end
 
 event action messageEvent name=Implementation
-begin doc = proc.docs.hd | doc.project = call projAction execute doc.project msg.payload []
+begin doc = proc.docs.hd | doc.project = projAction execute doc.project msg.payload []
     | proc.docs = [doc] | result [ next { proc.id } ] proc reply end
 
 event action messageEvent name=Executed
@@ -40,22 +40,22 @@ begin end
 
 event action request from=Registration to=gwNeedsDetermination
 begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
-    | indexUrgent newProc newDoc | newState = call actionGen req proc newProc
+    | indexUrgent newProc newDoc | newState = actionGen req proc newProc
     | result [ general req newState newDoc | stop ] newState reply proc.executors end
 
 event action request from=InitialConsideration
 begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
-    | newProc = call actionGen req proc newProc
+    | newProc = actionGen req proc newProc
     | result [ general req newProc newDoc | stop ] newProc reply proc.executors end
 
 event action request from=Implementation to=gwConfirmation
 begin newDoc = proc.docs.hd
-    | newProc = proc | newProc.docs = [newDoc] | newProc = call actionGen req proc newProc
+    | newProc = proc | newProc.docs = [newDoc] | newProc = actionGen req proc newProc
     | result [ general req newProc newDoc | next proc.id ] newProc reply proc.executors end
 
 event action request to=Grouping
 begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
-    | broadcast "Complete" | newProc = call actionGen req proc newProc
+    | broadcast "Complete" | newProc = actionGen req proc newProc
     | result [ general req newProc newDoc | stop ] newProc reply proc.executors end
 
 event action request to=gwRejected
@@ -64,12 +64,12 @@ begin newProc = call actionGen req proc proc
 
 event action request from=gwRejected to=Implementation
 begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
-    | broadcast "ImplementationRejected" | newProc = call actionGen req proc newProc
+    | broadcast "ImplementationRejected" | newProc = actionGen req proc newProc
     | result [ general req newProc newDoc | stop ] newProc reply proc.executors end
 
 event action request to=Archive
 begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
-    | unindexUrgent proc newDoc | newState = call actionGen req proc newProc
+    | unindexUrgent proc newDoc | newState = actionGen req proc newProc
     | result [ general req newState newDoc | stop ] newState reply proc.executors end
 
 route routeTo
