@@ -12,11 +12,12 @@ clause -> 'route' name args 'begin' decls 'end' : {route, '$2', args('$3'), '$5'
 clause -> 'form' name args 'begin' decls 'end' : {form, '$2', args('$3'), '$5'}.
 clause -> 'notice' name args 'begin' decls 'end' : {notify, '$2', args('$3'), '$5'}.
 args -> '$empty' : [].
-args -> word args : ['$1'|'$2'].
-args -> string args : ['$1'|'$2'].
+args -> name args : ['$1'|'$2'].
 conts -> args : [{cont,arg(args('$1'))}].
 conts -> args '|' conts : [{cont,arg(args('$1'))}|'$3'].
 name -> word : {name,name('$1')}.
+name -> binary : {name,name('$1')}.
+name -> string : {name,name('$1')}.
 union -> args : '$1'.
 union -> args '+' union : {union,'$1','$3'}.
 decl -> word '=' args ':' union : {field,name('$1'),arg(args('$3')),type(args(union('$5')))}.
@@ -33,12 +34,12 @@ buttons -> '[' button ']' : {buttons,'$2'}.
 button -> args : [button({button,args('$1')})].
 button -> args '|' button : [button({button,args('$1')})|'$3'].
 Rootsymbol mod.
-Nonterminals mod lib clauses args clause name decl decls button field buttons fields union conts cont.
-Terminals word string '=' '+' ':' '|' '[' ']' 'module' 'import' 'begin' 'end' 'form' 'bpe' 'kvs'
+Nonterminals mod lib clauses args clause name decl decls button field buttons fields union conts.
+Terminals word binary string '=' '+' ':' '|' '[' ']' 'module' 'import' 'begin' 'end' 'form' 'bpe' 'kvs'
                'event' 'route' 'notice' 'record' 'document' 'result'.
 Erlang code.
 word({_,_,Name}) -> Name.
-name({_,_,Name}) -> Name;
+name({_,_,Name}) -> trim(Name);
 name({_,Name}) -> Name.
 arg([]) -> [];
 arg({args,A}) -> A.
@@ -48,6 +49,7 @@ args(A) -> args(lists:flatten([A]),[]).
 args([],A) -> {args,lists:reverse(A)};
 args([{name,Word}|T],A) -> args(T,[Word|A]);
 args([{string,_,Word}|T],A) -> args(T,[Word|A]);
+args([{binary,_,Word}|T],A) -> args(T,[Word|A]);
 args([{word,_,Word}|T],A) -> args(T,[Word|A]).
 field({field,{args,[Name,Type|Args]}}) -> {field,Name,Type,Args}.
 button({button,{args,[Name,Title|Args]}}) -> {button,Name,Title,Args}.
@@ -57,3 +59,4 @@ type({args,X}) -> {type,X}.
 fst({A,_}) -> A.
 conts([{cont,[]}]) -> [];
 conts(A) -> A.
+trim(A) -> string:trim(A,both,[$',$"]).

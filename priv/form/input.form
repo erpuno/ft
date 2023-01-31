@@ -18,17 +18,17 @@ begin pid = options.pid
     | butTemplate "Шаблон" { :templates :create :inputOrder } on postback=:create ]
     [ project comboLookup "Відхилено з коментарем"
     | urgent bool "Терміново" required
-    | id string "Номер документа"
+    | id string 'Номер документа'
     | seq_id string "Унікальний номер"
     | to comboLookupVec "Первинний розгляд" CRM.Forms.Person regBind
-    | nomenclature comboLookup "Номенклатура" CRM.Forms.DeedCat "/crm/deeds"
+    | nomenclature comboLookup "Номенклатура" CRM.Forms.DeedCat '/crm/deeds'
     | document_type string "Вид документа"
     | signed string "Підписав"
     | generic corr controlTask corrOpt
     | date calendar "Дата документа"
     | dueDate calendar "Термін виконання" min=:erlang.date() default=FormatDate.add_days(29)
     | note textarea "Примітка"
-    | add_sheets number "К-ть аркушів додатків"
+    | add_sheets number 'К-ть аркушів додатків'
     | bizTask_initiator comboLookupVec CRM.Forms.Person "/acc"
     | modified_by comboLookupVec CRM.Forms.Person "/acc"
     | registered_by comboLookup "Реєстратор" required CRM.Forms.Person regBind default=user
