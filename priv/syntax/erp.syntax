@@ -60,8 +60,10 @@ context default
     keyword whole result yellow
 
     keyword #' brightmagenta
-    keyword ' brightmagenta
+    keyword ' green
+    keyword " brightgreen
     keyword , brightmagenta
+
 
     keyword ( brightcyan
     keyword ) brightcyan
@@ -73,6 +75,10 @@ context default
 
 # Comments
 
-context " " green
+context exclusive ' ' green
+    keyword \\' green
+    keyword \\\\ green
+
+context exclusive " " brightgreen
     keyword \\" green
     keyword \\\\ green
