@@ -2,7 +2,7 @@ module input bpe
 
 event action broadcastEvent begin result [ ] proc stop end
 event action messageEvent process userStarted=system:string begin result [ ] proc stop end
-event action messageEvent payload={next,*} begin output.bpe.action msg proc end
+event action messageEvent payload={:next,*} begin output.bpe.action msg proc end
 event action messageEvent name=DocumentStatistics payload=payload
 begin personal_stat proc.id executed payload | result [ ] proc stop end
 
@@ -15,7 +15,6 @@ begin doc = proc.docs.hd | doc.project = projAction execute doc.project msg.payl
 
 event action messageEvent name=Executed
 begin result [ generate_history { executed proc.id msg.sender.id proc.docs.hd } spawn Elixir.History
-             | makeList ok
              | next { proc.id } ] proc reply end
 
 event action messageEvent name=TaskCreated
