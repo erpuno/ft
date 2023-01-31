@@ -13,6 +13,7 @@ clause -> 'form' name args 'begin' decls 'end' : {form, '$2', args('$3'), '$5'}.
 clause -> 'notice' name args 'begin' decls 'end' : {notify, '$2', args('$3'), '$5'}.
 args -> '$empty' : [].
 args -> word args : ['$1'|'$2'].
+args -> string args : ['$1'|'$2'].
 conts -> args : [{cont,arg(args('$1'))}].
 conts -> args '|' conts : [{cont,arg(args('$1'))}|'$3'].
 name -> word : {name,name('$1')}.
@@ -33,7 +34,7 @@ button -> args : [button({button,args('$1')})].
 button -> args '|' button : [button({button,args('$1')})|'$3'].
 Rootsymbol mod.
 Nonterminals mod lib clauses args clause name decl decls button field buttons fields union conts cont.
-Terminals word '=' '+' ':' '|' '[' ']' 'module' 'import' 'begin' 'end' 'form' 'bpe' 'kvs'
+Terminals word string '=' '+' ':' '|' '[' ']' 'module' 'import' 'begin' 'end' 'form' 'bpe' 'kvs'
                'event' 'route' 'notice' 'record' 'document' 'result'.
 Erlang code.
 word({_,_,Name}) -> Name.
@@ -46,6 +47,7 @@ args({decl,A}) -> args(args(A));
 args(A) -> args(lists:flatten([A]),[]).
 args([],A) -> {args,lists:reverse(A)};
 args([{name,Word}|T],A) -> args(T,[Word|A]);
+args([{string,_,Word}|T],A) -> args(T,[Word|A]);
 args([{word,_,Word}|T],A) -> args(T,[Word|A]).
 field({field,{args,[Name,Type|Args]}}) -> {field,Name,Type,Args}.
 button({button,{args,[Name,Title|Args]}}) -> {button,Name,Title,Args}.
