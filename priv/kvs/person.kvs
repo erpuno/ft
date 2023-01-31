@@ -2,7 +2,7 @@ module person kvs
 import location
 import organization
 record Person
-begin id = seq : term
+begin id = seq 10 : term
     | cn = [] : [] + binary
     | name = [] : [] + binary
     | displayName = [] : [] + binary
