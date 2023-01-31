@@ -13,9 +13,10 @@ defmodule FT do
   def testFile(), do: :inputProc |> testFile |> compileForms
 
   def compileForms(ast) do
+      :filelib.ensure_dir 'priv/out/'
       {name,beam} = case :compile.forms ast, [:debug_info,:return] do
          {:ok,name,beam,_} ->
-           :file.write_file :erlang.atom_to_list(name) ++ '.beam', beam
+           :file.write_file 'priv/out/' ++ :erlang.atom_to_list(name) ++ '.beam', beam
            :code.purge name
            :code.load_file name
            {name,beam}

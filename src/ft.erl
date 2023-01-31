@@ -5,7 +5,7 @@
 
 init([])   -> {ok, {{one_for_one, 5, 10}, []}}.
 main(A)    -> console:unicode(), halt(console(A)).
-start(_,_) -> console:unicode(), supervisor:start_link({local,?MODULE},?MODULE,[]).
+start(_,_) -> console:unicode(), code:add_pathz("priv/out"), supervisor:start_link({local,?MODULE},?MODULE,[]).
 stop(_)    -> ok.
 
 console([]) ->
