@@ -177,27 +177,25 @@ begin (Cr,R):R,[] | (R,gwND):O,R | (gwND,Det):D,[] | (*,InC):A,To
 ```
 
 ```
- {:event, {:name, "action"},
-     {:args, ["request", "from=gwRejected", "to=Implementation"]},
-     [
-       decl: {:assign, {:word, 65, "newDoc"}, [{:word, 65, "proc.docs.hd"}]},
-       decl: {:assign, {:word, 65, "newProc"}, [{:word, 65, "proc"}]},
-       decl: {:assign, {:word, 65, "newProc.docs"}, [{:word, 65, "[newDoc]"}]},
-       decl: {:result,
-        [
-          decl: [
-            {:word, 48, "general"},
-            {:word, 48, "req"},
-            {:word, 48, "newProc"},
-            {:word, 48, "newDoc"}
-          ],
-          decl: [{:word, 48, "stop"}]
-        ],
-        [
-          {:word, 48, "newProc"},
-          {:word, 48, "reply"},
-          {:word, 48, "proc.executors"}
-        ]}
+{:event, {:name, "action"}, {:args, ["request", "to=gwRejected"]},
+  [
+    decl: {:assign, "newProc",{:args, ["call", "actionGen", "req", "proc", "proc"]}},
+    decl: {:result,
+      [
+        cont: ["general", "req", "newPproc", "newDoc"],
+        cont: ["next", "proc.id"]
+      ], {:args, ["newProc", "reply", "proc.executors"]}}
+  ]},
+{:route, {:name, "routeTo"}, [],
+  [
+    decl: {:call, ["(Cr,R):R,[]"]},
+    decl: {:call, ["(R,gwND):O,R"]},
+    decl: {:call, ["(gwND,Det):D,[]"]},
+    decl: {:call, ["(*,InC):A,To"]},
+    decl: {:call, ["(gwC,I):A,To,toExecutors"]},
+    decl: {:call, ["(*,G):G,[];P,M"]},
+    decl: {:call, ["(*,A):A,[]"]}
+  ]},
 ```
 
 Credits
