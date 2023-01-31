@@ -116,10 +116,9 @@ begin pid = options.pid
 ```
 > :ft.console ['parse','file','priv/form/input.form' ]
 {:ok,
- {:module, {:name, "inputForm"}, {:form, 1},
+ {:module, "inputForm", :form,
   [
-    {:event, {:name, "id"}, {:args, []},
-     [decl: {:call, {:args, ["ERP.inputOrder"]}}]},
+    {:event, {:name, "id"}, [], [decl: {:call, ["ERP.inputOrder"]}]},
     {:form, {:name, "new"}, {:args, ["name", "doc:ERP.inputOrder", "options"]},
      [
        decl: {:assign, "pid", {:args, ["options.pid"]}},
@@ -136,12 +135,44 @@ begin pid = options.pid
          [
            {:button, "butOk", "title",
             ["{", "postback", ":inputOrder", "doc.id", "pid", "}"]},
-           {:button, "butCancel", "\"Скасувати\"",
+           {:button, "butCancel", "Скасувати",
             ["{", ":cancel", "postback", ":inputOrder", "doc.id", "pid", "}"]},
-           {:button, "butTemplate", "\"Шаблон\"",
+           {:button, "butTemplate", "Шаблон",
             ["{", ":templates", ":create", ":inputOrder", "}", "on",
              "postback=:create"]}
          ]},
+        {:fields,
+         [
+           {:field, "project", "comboLookup",
+            ["Відхилено з коментарем"]},
+           {:field, "urgent", "bool", ["Терміново", "required"]},
+           {:field, "id", "string", ["Номер документа"]},
+           {:field, "seq_id", "string", ["Унікальний номер"]},
+           {:field, "to", "comboLookupVec",
+            ["Первинний розгляд", "CRM.Forms.Person", "regBind"]},
+           {:field, "nomenclature", "comboLookup",
+            ["Номенклатура", "CRM.Forms.DeedCat", "/crm/deeds"]},
+           {:field, "document_type", "string", ["Вид документа"]},
+           {:field, "signed", "string", ["Підписав"]},
+           {:field, "generic", "corr", ["controlTask", "corrOpt"]},
+           {:field, "date", "calendar", ["Дата документа"]},
+           {:field, "dueDate", "calendar",
+            ["Термін виконання", "min=:erlang.date()",
+             "default=FormatDate.add_days(29)"]},
+           {:field, "note", "textarea", ["Примітка"]},
+           {:field, "add_sheets", "number",
+            ["К-ть аркушів додатків"]},
+           {:field, "bizTask_initiator", "comboLookupVec",
+            ["CRM.Forms.Person", "/acc"]},
+           {:field, "modified_by", "comboLookupVec",
+            ["CRM.Forms.Person", "/acc"]},
+           {:field, "registered_by", "comboLookup",
+            ["Реєстратор", ...]},
+           {:field, "generic", "topic", [...]},
+           {:field, "generic", "coordination", ...}
+         ]}}
+     ]}
+  ]}}
 ```
 
 BPE module sample:
