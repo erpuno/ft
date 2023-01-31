@@ -22,6 +22,8 @@ route    : {token, {route, TokenLine}}.
 notice   : {token, {notice, TokenLine}}.
 \|       : {token, {'|', TokenLine}}.
 \=       : {token, {'=', TokenLine}}.
+\:       : {token, {':', TokenLine}}.
+\+       : {token, {'+', TokenLine}}.
 \[       : {token, {'[', TokenLine}}.
 \]       : {token, {']', TokenLine}}.
 {A}+     : {token, {word, TokenLine, unicode:characters_to_binary(TokenChars)}}.

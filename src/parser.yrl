@@ -15,22 +15,25 @@ clause -> 'notice' name args 'begin' decls 'end' : {notify, '$2', args('$3'), '$
 args -> '$empty' : [].
 args -> word args : ['$1'|'$2'].
 name -> word : {name,name('$1')}.
-decl -> args : '$1'.
-decl -> word '=' args : {assign,'$1','$3'}.
+union -> args : '$1'.
+union -> args '+' union : {union,'$1','$3'}.
+decl -> word '=' args ':' union : {field,name('$1'),'$3','$5'}.
+decl -> word '=' args : {assign,'$1',args('$3')}.
+decl -> args : {call,args('$1')}.
 decl -> 'document' word word buttons fields : {document,word('$2'),word('$3'),'$4','$5'}.
 decl -> 'result' '[' decls ']' args : {result,'$3','$5'}.
 decls -> decl : [{decl,'$1'}].
 decls -> decl '|' decls : [{decl,'$1'}|'$3'].
 fields -> '[' field ']' : {fields,'$2'}.
-field -> args : [{field,'$1'}].
-field -> args '|' field : [{field,'$1'}|'$3'].
+field -> args : [{field,args('$1')}].
+field -> args '|' field : [{field,args('$1')}|'$3'].
 buttons -> '[' button ']' : {buttons,'$2'}.
-button -> args : [{button,'$1'}].
-button -> args '|' button : [{button,'$1'}|'$3'].
+button -> args : [{button,args('$1')}].
+button -> args '|' button : [{button,args('$1')}|'$3'].
 
 Rootsymbol mod.
-Nonterminals mod lib clauses args clause name decl decls button field buttons fields.
-Terminals word '=' '|' '[' ']' 'document' 'module' 'event' 'route' 'notice' 'form' 'bpe' 'kvs' 'begin' 'end' 'result' 'record' 'import'.
+Nonterminals mod lib clauses args clause name decl decls button field buttons fields union.
+Terminals word '=' '+' ':' '|' '[' ']' 'document' 'module' 'event' 'route' 'notice' 'form' 'bpe' 'kvs' 'begin' 'end' 'result' 'record' 'import'.
 Erlang code.
 
 word({_,_,Name}) -> Name.
