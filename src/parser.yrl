@@ -6,11 +6,11 @@ lib -> 'form' : '$1'.
 clauses -> clause : ['$1'].
 clauses -> clause clauses : ['$1'|'$2'].
 clause -> 'import' name : {import, '$2'}.
-clause -> 'record' name args 'begin' decls 'end' : {record, '$2', args('$3'), '$5'}.
-clause -> 'event' name args 'begin' decls 'end' : {event, '$2', args('$3'), '$5'}.
-clause -> 'route' name args 'begin' decls 'end' : {route, '$2', args('$3'), '$5'}.
-clause -> 'form' name args 'begin' decls 'end' : {form, '$2', args('$3'), '$5'}.
-clause -> 'notice' name args 'begin' decls 'end' : {notify, '$2', args('$3'), '$5'}.
+clause -> 'record' name args 'begin' decls 'end' : {record, '$2', args('$3'), rd('$5')}.
+clause -> 'event' name args 'begin' decls 'end' : {event, '$2', args('$3'), rd('$5')}.
+clause -> 'route' name args 'begin' decls 'end' : {route, '$2', args('$3'), rd('$5')}.
+clause -> 'form' name args 'begin' decls 'end' : {form, '$2', args('$3'), rd('$5')}.
+clause -> 'notice' name args 'begin' decls 'end' : {notify, '$2', args('$3'), rd('$5')}.
 args -> '$empty' : [].
 args -> name args : ['$1'|'$2'].
 conts -> args : [{cont,arg(args('$1'))}].
@@ -60,3 +60,6 @@ fst({A,_}) -> A.
 conts([{cont,[]}]) -> [];
 conts(A) -> A.
 trim(A) -> string:trim(A,both,[$',$"]).
+rd(A) -> rd(A,[]).
+rd([],A) -> lists:reverse(A);
+rd([{decl,X}|T],A) -> rd(T,[X|A]).
