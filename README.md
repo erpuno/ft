@@ -30,24 +30,42 @@ FormalTalk ERP.UNO Language INFOTECH SE 3.1.0
  command := parse | lex | read | fst | snd | file
 
 
- Sample: :ft.console ['parse','file','priv/forms/input.form' ]
+ Sample: :ft.console ['parse','file','priv/kvs/person.kvs' ]
 ```
 
-FormalTalk AST:
+KVS module sample:
 
 ```
-> :ft.console ['parse','file','priv/procs/input.bpe' ]
-{:module, {:name, "input"}, {:bpe, 1},
-...
-    {:route, {:name, "routeFrom"}, {:args, []},
+module person kvs
+import location
+import organization
+record Person
+begin id = seq 10 : term
+    | cn = [] : [] + binary
+    | name = [] : [] + binary
+    | displayName = [] : [] + binary
+    | location = [] : ERP.Loc
+    | hours = 0 : integer
+    | type = [] : term end
+
+```
+
+```
+> :ft.console ['parse','file','priv/kvs/person.kvs' ]
+{:ok,
+ {:module, {:name, "person"}, {:kvs, 1},
+  [
+    {:import, {:name, "location"}},
+    {:import, {:name, "organization"}},
+    {:record, {:name, "Person"}, {:args, []},
      [
-       decl: [{:word, 80, "(R,gwND):R,[]"}],
-       decl: [{:word, 80, "(Det,InC):D,[]"}],
-       decl: [{:word, 80, "(InC,I):A,To,fromExecutors"}],
-       decl: [{:word, 80, "(I,gwC):A,To,fromExecutors"}],
-       decl: [{:word, 81, "(gwR,I):G,[]"}],
-       decl: [{:word, 81, "(*,G):A,To"}],
-       decl: [{:word, 81, "(*,A):G,[];O,R;U,RTo;R,[];D,[]"}]
+       decl: {:field, "id", ["seq", "10"], {:type, ["term"]}},
+       decl: {:field, "cn", ["[]"], {:type, ["[]", "binary"]}},
+       decl: {:field, "name", ["[]"], {:type, ["[]", "binary"]}},
+       decl: {:field, "displayName", ["[]"], {:type, ["[]", "binary"]}},
+       decl: {:field, "location", ["[]"], {:type, ["ERP.Loc"]}},
+       decl: {:field, "hours", ["0"], {:type, ["integer"]}},
+       decl: {:field, "type", ["[]"], {:type, ["term"]}}
      ]}
   ]}}
 ```
@@ -126,10 +144,9 @@ begin pid = options.pid
     | coorOpt = dict
     | coorOpt.users = doc.coordination
     | document "inputOrder" name
-          [ butOk            title postback { postback :inputOrder doc.id pid }
-          | butCancel  "Скасувати" postback { :cancel postback :inputOrder doc.id pid }
-          | butTemplate "Шаблон" postback { :templates :create :inputOrder }
-                                 on postback=:create ]
+    [ butOk title postback { postback :inputOrder doc.id pid }
+    | butCancel "Скасувати" postback { :cancel postback :inputOrder doc.id pid }
+    | butTemplate "Шаблон" postback { :templates :create :inputOrder } on postback=:create ]
     [ project comboLookup "Відхилено з коментарем"
     | urgent bool "Терміново" required
     | id string "Номер документа"
@@ -152,14 +169,34 @@ begin pid = options.pid
 ```
 
 ```
-{:fields,
-  [field: [{:word, 21, "project"},
-           {:word, 21, "comboLookup"},
-           {:word, 21, "\"Відхилено з коментарем\""}],
-   field: [{:word, 22, "urgent"},
-           {:word, 22, "bool"},
-           {:word, 22, "\"Терміново\""},
-           {:word, 22, "required"}],
+> :ft.console ['parse','file','priv/form/input.form' ]
+{:ok,
+ {:module, {:name, "inputForm"}, {:form, 1},
+  [
+    {:event, {:name, "id"}, {:args, []},
+     [decl: {:call, {:args, ["ERP.inputOrder"]}}]},
+    {:form, {:name, "new"}, {:args, ["name", "doc:ERP.inputOrder", "options"]},
+     [
+       decl: {:assign, "pid", {:args, ["options.pid"]}},
+       decl: {:assign, "user", {:args, ["options.user"]}},
+       decl: {:assign, "regBind", {:args, ["orgPath", "user"]}},
+       decl: {:assign, "pid", {:args, ["options.pid"]}},
+       decl: {:assign, "corrOpt", {:args, ["options"]}},
+       decl: {:assign, "corrOpt.postback", {:args, ["postback"]}},
+       decl: {:assign, "corrOpt.required", {:args, ["true"]}},
+       decl: {:assign, "coorOpt", {:args, ["dict"]}},
+       decl: {:assign, "coorOpt.users", {:args, ["doc.coordination"]}},
+       decl: {:document, "\"inputOrder\"", "name",
+        {:buttons,
+         [
+           {:button, "butOk", "title",
+            ["{", "postback", ":inputOrder", "doc.id", "pid", "}"]},
+           {:button, "butCancel", "\"Скасувати\"",
+            ["{", ":cancel", "postback", ":inputOrder", "doc.id", "pid", "}"]},
+           {:button, "butTemplate", "\"Шаблон\"",
+            ["{", ":templates", ":create", ":inputOrder", "}", "on",
+             "postback=:create"]}
+         ]},
 ```
 
 Credits
