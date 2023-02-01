@@ -23,22 +23,22 @@ defmodule FT do
   def var(val), do: {:var,1,latom(val)}
   def atom(val) when is_atom(val), do: {:atom,1,val}
   def atom(val) when is_list(val), do: {:atom,1,latom(val)}
-  def fun(mod,name,arity), do: {:fun,1,{:function,mod,name,{:integer,1,arity}}}
-  def testFile(), do: :inputProc |> testFile |> compileForms
+  def fun(mod,name,arity), do: {:fun,1,{:function,mod,name,integer(arity)}}
+  def test(), do: testFile() |> compileForms
 
   # Imported module records
 
-  def record(recname,recfields) do
-      fields = :lists.map(fn {name,default,type} ->
-          defx = case default do
+  def record(recname,fields) do
+      recfields = :lists.map(fn {name,defx,type} ->
+          default = case defx do
               [] -> cons([])
               x when is_integer(x) -> integer(x)
               x when is_list(x) -> string(x)
               x when is_binary(x) -> binary(:erlang.binary_to_list(x))
           end
-          {:typed_record_field,{:record_field,1,atom(name),defx},type}
-          end, recfields)
-      {:attribute,1,:record,{recname,fields}}
+          {:typed_record_field,{:record_field,1,atom(name),default},type}
+          end, fields)
+      {:attribute,1,:record,{recname,recfields}}
   end
 
   # routeProc{} onstructor invocation generation
@@ -75,11 +75,11 @@ defmodule FT do
 
   # Compile AST form to disk and reload
 
-  def compileForms(ast) do
-      :filelib.ensure_dir 'priv/out/'
+  def compileForms(ast, out \\ 'priv/out/') do
+      :filelib.ensure_dir out
       case :compile.forms ast, [:debug_info,:return] do
          {:ok,name,beam,_} ->
-           :file.write_file 'priv/out/' ++ :erlang.atom_to_list(name) ++ '.beam', beam
+           :file.write_file out ++ :erlang.atom_to_list(name) ++ '.beam', beam
            :code.purge name
            :code.load_file name
            {name,beam}
@@ -90,9 +90,9 @@ defmodule FT do
 
   # Sample AST form of route function generation
 
-  def testFile(name) do
+  def testFile() do
       [
-        mod(name),
+        mod(:inputProc),
         compile_all(),
         record(:routeProc, [{:id,[],{:type,1,:list,[]}},
                             {:operation,[],{:type,1,:term,[]}},

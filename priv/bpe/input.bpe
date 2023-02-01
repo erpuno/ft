@@ -1,6 +1,5 @@
 module input bpe
-
-import kvs.{routeProc,bizTask,inputOrder,messageEvent,broadcastEvent,asyncEvent,request}
+import kvs.*
 
 event action broadcastEvent begin result [ ] proc stop end
 event action messageEvent process userStarted=system:string begin result [ ] proc stop end
