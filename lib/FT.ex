@@ -57,11 +57,10 @@ defmodule FT do
 
   # Route clause generator
 
-  def routeClause(s,d,commands) do
-      routeCommands = :lists.map fn {folder,users,folderType,callback} ->
-          routeProcInvoke(folder,users,folderType,callback) end, commands
-      cmds = cons(routeCommands)
-      {:clause,1,[{:tuple,1,[atom(:request),string(s),string(d)]},var('FT')],[],[cmds]}
+  def routeClause(src,dst,commands) do
+      cmds = :lists.map fn {folder,users,folderType,callback} ->
+             routeProcInvoke(folder,users,folderType,callback) end, commands
+      {:clause,1,[{:tuple,1,[atom(:request),string(src),string(dst)]},var('FT')],[],[cons(cmds)]}
   end
 
   # Route function generator
