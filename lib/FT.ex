@@ -12,7 +12,6 @@ defmodule FT do
 
   # Erlang AST definitions
 
-  def latom(x), do: :erlang.list_to_atom x
   def cons([]), do: {:nil,1}
   def cons([x|t]), do: {:cons,1,x,cons(t)}
   def mod(name), do: {:attribute,1,:module,name}
@@ -24,7 +23,6 @@ defmodule FT do
   def atom(val) when is_atom(val), do: {:atom,1,val}
   def atom(val) when is_list(val), do: {:atom,1,latom(val)}
   def fun(mod,name,arity), do: {:fun,1,{:function,mod,name,integer(arity)}}
-  def test(), do: testFile() |> compileForms
 
   # Imported module records
 
@@ -34,7 +32,7 @@ defmodule FT do
               [] -> cons([])
               x when is_integer(x) -> integer(x)
               x when is_list(x) -> string(x)
-              x when is_binary(x) -> binary(:erlang.binary_to_list(x))
+              x when is_binary(x) -> binary(blist(x))
           end
           {:typed_record_field,{:record_field,1,atom(name),default},type}
           end, fields)
@@ -47,7 +45,7 @@ defmodule FT do
       usrs = :lists.map fn x -> atom(x) end, users
       ft = case folderType do
           [] -> var('FT')
-          x when is_binary(x) -> binary(:erlang.binary_to_list(x))
+          x when is_binary(x) -> binary(blist(x))
       end
       args = [{:folder,binary(folder)},
               {:folderType,ft},
@@ -79,7 +77,7 @@ defmodule FT do
       :filelib.ensure_dir out
       case :compile.forms ast, [:debug_info,:return] do
          {:ok,name,beam,_} ->
-           :file.write_file out ++ :erlang.atom_to_list(name) ++ '.beam', beam
+           :file.write_file out ++ alist(name) ++ '.beam', beam
            :code.purge name
            :code.load_file name
            {name,beam}
@@ -88,8 +86,13 @@ defmodule FT do
       end
   end
 
+  def latom(x), do: :erlang.list_to_atom x
+  def alist(x), do: :erlang.atom_to_list x
+  def blist(x), do: :erlang.binary_to_list x
+
   # Sample AST form of route function generation
 
+  def test(), do: testFile() |> compileForms
   def testFile() do
       [
         mod(:inputProc),
