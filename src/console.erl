@@ -5,8 +5,8 @@ unicode()          -> io:setopts(standard_io, [{encoding, unicode}]).
 errcode({ok,_})    -> 0;
 errcode({error,_}) -> 1.
 
-fst({X,_}) -> {ok,X}.
-snd({_,X}) -> {ok,X}.
+fst({X,_}) -> X.
+snd({_,X}) -> X.
 file(F)    -> lex(read(F)).
 a(F)       -> parse(file(F)).
 

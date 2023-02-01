@@ -4,7 +4,7 @@ defmodule FT.Mixfile do
   def project() do
     [
       app: :ft,
-      version: "3.2.1",
+      version: "3.2.2",
       elixir: "~> 1.7",
       description: "FT FormalTalk ERP.UNO Compiler",
       package: package(),
@@ -18,7 +18,7 @@ defmodule FT.Mixfile do
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :ft,
-      links: %{"GitHub" => "https://github.com/erpuno/formaltalk"}
+      links: %{"GitHub" => "https://github.com/erpuno/ft"}
     ]
   end
 

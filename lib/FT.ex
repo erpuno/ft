@@ -74,6 +74,7 @@ defmodule FT do
 
   def compileForms(ast, out \\ 'priv/out/') do
       :filelib.ensure_dir out
+      :code.add_pathz out
       case :compile.forms ast, [:debug_info,:return] do
          {:ok,name,beam,_} ->
            :file.write_file out ++ alist(name) ++ '.beam', beam
@@ -96,6 +97,8 @@ defmodule FT do
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
         = :inputProc.routeTo {:request, 'gwConfirmation', 'Implementation'}, []
       :ok
+  end
+  def imports() do
   end
   def testFile() do
       [
