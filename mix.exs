@@ -4,7 +4,7 @@ defmodule FT.Mixfile do
   def project() do
     [
       app: :ft,
-      version: "3.1.0",
+      version: "3.2.1",
       elixir: "~> 1.7",
       description: "FT FormalTalk ERP.UNO Compiler",
       package: package(),
