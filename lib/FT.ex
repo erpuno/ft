@@ -5,7 +5,7 @@ defmodule FT do
   # Supported code generators:
   # [x] module
   # [x] route
-  # [ ] import
+  # [x] import
   # [ ] notice
   # [ ] event
   # [ ] form
