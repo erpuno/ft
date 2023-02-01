@@ -92,7 +92,12 @@ defmodule FT do
 
   # Sample AST form of route function generation
 
-  def test(), do: testFile() |> compileForms
+  def test() do
+      testFile() |> compileForms
+      [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
+        = :inputProc.routeTo {:request, 'gwConfirmation', 'Implementation'}, []
+      :ok
+  end
   def testFile() do
       [
         mod(:inputProc),
