@@ -1,0 +1,13 @@
+module routeProc kvs
+record routeProc
+begin id = [] : list
+    | operation = [] : [] + atom
+    | feed = [] : [] + binary
+    | type = [] : atom
+    | folder = [] : binary
+    | users = [] : binary + list
+    | folderType = "personal" : binary
+    | callback = [] : [] + function
+    | reject = false : false + boolean
+    | options = [] : [] + list end
+
