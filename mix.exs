@@ -14,7 +14,7 @@ defmodule FT.Mixfile do
 
   def package do
     [
-      files: ~w(doc src mix.exs LICENSE),
+      files: ~w(doc lib priv src mix.exs LICENSE),
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :ft,
