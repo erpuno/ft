@@ -1,4 +1,4 @@
-module mia kvs
+module inputOrder kvs
 import person
 import project
 import assistantMark

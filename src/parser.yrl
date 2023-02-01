@@ -3,6 +3,7 @@ mod -> 'module' name lib clauses : {module,name('$2'),fst('$3'),'$4'}.
 lib -> 'kvs' : '$1'.
 lib -> 'bpe' : '$1'.
 lib -> 'form' : '$1'.
+lib -> 'nitro' : '$1'.
 clauses -> clause : ['$1'].
 clauses -> clause clauses : ['$1'|'$2'].
 clause -> 'import' name : {import, '$2'}.
@@ -35,7 +36,7 @@ button -> args : [button({button,args('$1')})].
 button -> args '|' button : [button({button,args('$1')})|'$3'].
 Rootsymbol mod.
 Nonterminals mod lib clauses args clause name decl decls button field buttons fields union conts.
-Terminals word binary string '=' '+' ':' '|' '[' ']' 'module' 'import' 'begin' 'end' 'form' 'bpe' 'kvs'
+Terminals word binary string '=' '+' ':' '|' '[' ']' 'module' 'import' 'begin' 'end' 'form' 'bpe' 'kvs' 'nitro'
                'event' 'route' 'notice' 'record' 'document' 'result'.
 Erlang code.
 word({_,_,Name}) -> Name.
