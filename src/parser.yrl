@@ -8,7 +8,7 @@ clauses -> clause : ['$1'].
 clauses -> clause clauses : ['$1'|'$2'].
 clause -> 'import' name : {import, name('$2')}.
 clause -> 'record' name args 'begin' decls 'end' : {record, '$2', args('$3'), rd('$5')}.
-clause -> 'event' name args 'begin' decls 'end' : {event, '$2', args('$3'), rd('$5')}.
+clause -> 'fun' name args 'begin' decls 'end' : {event, '$2', args('$3'), rd('$5')}.
 clause -> 'route' name args 'begin' decls 'end' : {route, '$2', args('$3'), rd('$5')}.
 clause -> 'form' name args 'begin' decls 'end' : {form, '$2', args('$3'), rd('$5')}.
 clause -> 'notice' name args 'begin' decls 'end' : {notify, '$2', args('$3'), rd('$5')}.
@@ -36,8 +36,8 @@ button -> args : [button({button,args('$1')})].
 button -> args '|' button : [button({button,args('$1')})|'$3'].
 Rootsymbol mod.
 Nonterminals mod lib clauses args clause name decl decls button field buttons fields union conts.
-Terminals word binary string '=' '+' ':' '|' '[' ']' 'module' 'import' 'begin' 'end' 'form' 'bpe' 'kvs' 'nitro'
-               'event' 'route' 'notice' 'record' 'document' 'result'.
+Terminals word binary string '=' '+' ':' '|' '[' ']' 'module' 'import' 'begin' 'end'
+          'form' 'bpe' 'kvs' 'nitro' 'fun' 'route' 'notice' 'record' 'document' 'result'.
 Erlang code.
 word({_,_,Name}) -> Name.
 name({_,_,Name}) -> trim(Name);

@@ -1,6 +1,6 @@
 module inputForm form
 
-event id begin ERP.inputOrder end
+fun id begin ERP.inputOrder end
 
 form new name doc:ERP.inputOrder options
 begin pid = options.pid

@@ -18,7 +18,7 @@ import   : {token, {'import', TokenLine}}.
 bpe      : {token, {bpe, TokenLine}}.
 kvs      : {token, {kvs, TokenLine}}.
 nitro    : {token, {nitro, TokenLine}}.
-event    : {token, {event, TokenLine}}.
+fun      : {token, {'fun', TokenLine}}.
 begin    : {token, {'begin', TokenLine}}.
 end      : {token, {'end', TokenLine}}.
 route    : {token, {route, TokenLine}}.

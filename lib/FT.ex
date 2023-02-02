@@ -86,6 +86,30 @@ defmodule FT do
       end
   end
 
+  # Substitute imports in file declarations
+
+  def unrollImports(decls,d) do
+      {acc,_} = :lists.foldl(
+          fn {:import,import}, {acc,dict} ->
+               case :maps.get(latom(blist(import)),dict,[]) do
+                  true -> {acc,dict}
+                     _ -> {_,_,_,dec} = loadFileAndUnrollImports(blist(import),dict)
+                          {:lists.umerge(acc,dec),:maps.put(latom(blist(import)),true,dict)} end
+             x, {acc,dict} -> {:lists.umerge([x],acc),dict} end, {[],d}, decls)
+      :lists.flatten(acc)
+  end
+
+  # Load and parse file
+
+  def loadFile(file), do: :ft.console ['snd','load',[priv_dir(),priv_prefix(),file]]
+
+  # Parse file and substutute imports in its declarations
+
+  def loadFileAndUnrollImports(file,dict \\ %{}) when is_list(file) do
+      {:module,name,spec,decls} = loadFile(file)
+      {:module,name,spec,unrollImports(decls, :maps.put(name,true,dict))}
+  end
+
   def latom(x),      do: :erlang.list_to_atom x
   def alist(x),      do: :erlang.atom_to_list x
   def blist(x),      do: :erlang.binary_to_list x
@@ -101,25 +125,8 @@ defmodule FT do
       :ok
   end
 
-  def substImports(decls,d) do
-      {acc,_} = :lists.foldl(
-          fn {:import,import}, {acc,dict} ->
-               case :maps.get(latom(blist(import)),dict,[]) do
-                  true -> {acc,dict}
-                     _ -> {_,_,_,dec} = substFile(blist(import),dict)
-                          {:lists.umerge(dec,acc),:maps.put(latom(blist(import)),true,dict)} end
-             x, {acc,dict} -> {:lists.umerge([x],acc),dict} end, {[],d}, decls)
-      :lists.flatten(acc)
-  end
-
-  def substFile(file,dict) when is_list(file) do
-      {:module,name,spec,decls} = :ft.console ['snd','a',[priv_dir(),priv_prefix(),file]]
-      newDecls = substImports(decls, :maps.put(name,true,dict))
-      {:module,name,spec,newDecls}
-  end
-
-  def testCompileFile file do
-      substFile file, %{}
+  def testCompileFile(file \\ 'bpe/input.bpe') do
+      loadFileAndUnrollImports file
   end
 
   def testFile do

@@ -1,5 +1,6 @@
 module location kvs
 import kvs/dict.kvs
+
 record Loc
 begin id = [] : list
     | code = [] : list

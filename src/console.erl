@@ -1,5 +1,5 @@
 -module(console).
--export([fst/1, snd/1, read/1, lex/1, parse/1, file/1, a/1, unicode/0, errcode/1]).
+-export([fst/1, snd/1, read/1, lex/1, parse/1, file/1, load/1, unicode/0, errcode/1]).
 
 unicode()          -> io:setopts(standard_io, [{encoding, unicode}]).
 errcode({ok,_})    -> 0;
@@ -8,7 +8,7 @@ errcode({error,_}) -> 1.
 fst({X,_}) -> X.
 snd({_,X}) -> X.
 file(F)    -> lex(read(F)).
-a(F)       -> parse(file(F)).
+load(F)    -> parse(file(F)).
 
 read(F) ->
   case file:read_file(F) of
