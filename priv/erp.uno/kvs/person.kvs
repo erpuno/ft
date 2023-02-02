@@ -1,6 +1,6 @@
 module person kvs
-import location
-import organization
+import kvs/location.kvs
+import kvs/organization.kvs
 record Person
 begin id = seq 10 : term
     | cn = [] : [] + binary

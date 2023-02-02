@@ -1,5 +1,5 @@
 module input bpe
-import kvs.*
+import kvs/routeProc.kvs
 
 event action broadcastEvent begin result [ ] proc stop end
 event action messageEvent process userStarted=system:string begin result [ ] proc stop end

@@ -1,7 +1,7 @@
 module inputOrder kvs
-import person
-import project
-import assistantMark
+import kvs/person.kvs
+import kvs/project.kvs
+import kvs/assistantMark.kvs
 record inputOrder hrl
 begin id = [] : [] + binary
     | guid = [] : list

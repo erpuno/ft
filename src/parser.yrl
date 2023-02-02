@@ -6,7 +6,7 @@ lib -> 'form' : '$1'.
 lib -> 'nitro' : '$1'.
 clauses -> clause : ['$1'].
 clauses -> clause clauses : ['$1'|'$2'].
-clause -> 'import' name : {import, '$2'}.
+clause -> 'import' name : {import, name('$2')}.
 clause -> 'record' name args 'begin' decls 'end' : {record, '$2', args('$3'), rd('$5')}.
 clause -> 'event' name args 'begin' decls 'end' : {event, '$2', args('$3'), rd('$5')}.
 clause -> 'route' name args 'begin' decls 'end' : {route, '$2', args('$3'), rd('$5')}.

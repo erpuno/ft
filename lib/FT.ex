@@ -1,6 +1,6 @@
 defmodule FT do
 
-  # FormalTalk ERP.UNO Compiler 3.1.0
+  # FormalTalk ERP.UNO Compiler 3.2.2
   #
   # Supported code generators:
   # [x] module
@@ -86,21 +86,43 @@ defmodule FT do
       end
   end
 
-  def latom(x), do: :erlang.list_to_atom x
-  def alist(x), do: :erlang.atom_to_list x
-  def blist(x), do: :erlang.binary_to_list x
+  def latom(x),      do: :erlang.list_to_atom x
+  def alist(x),      do: :erlang.atom_to_list x
+  def blist(x),      do: :erlang.binary_to_list x
+  def priv_prefix(), do: '/erp.uno/'
+  def priv_dir(),    do: :code.priv_dir(:ft)
 
   # Sample AST form of route function generation
 
   def test() do
       testFile() |> compileForms
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
-        = :inputProc.routeTo {:request, 'gwConfirmation', 'Implementation'}, []
+        = apply :inputProc, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
       :ok
   end
-  def imports() do
+
+  def substImports(decls,d) do
+      {acc,_} = :lists.foldl(
+          fn {:import,import}, {acc,dict} ->
+               case :maps.get(latom(blist(import)),dict,[]) do
+                  true -> {acc,dict}
+                     _ -> {_,_,_,dec} = substFile(blist(import),dict)
+                          {:lists.umerge(dec,acc),:maps.put(latom(blist(import)),true,dict)} end
+             x, {acc,dict} -> {:lists.umerge([x],acc),dict} end, {[],d}, decls)
+      :lists.flatten(acc)
   end
-  def testFile() do
+
+  def substFile(file,dict) when is_list(file) do
+      {:module,name,spec,decls} = :ft.console ['snd','a',[priv_dir(),priv_prefix(),file]]
+      newDecls = substDecls(decls, :maps.put(name,true,dict))
+      {:module,name,spec,newDecls}
+  end
+
+  def testCompileFile file do
+      substFile file, %{}
+  end
+
+  def testFile do
       [
         mod(:inputProc),
         compile_all(),

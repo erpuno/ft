@@ -1,5 +1,5 @@
 module location kvs
-import dict
+import kvs/dict.kvs
 record Loc
 begin id = [] : list
     | code = [] : list
