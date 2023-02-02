@@ -114,7 +114,7 @@ defmodule FT do
 
   def substFile(file,dict) when is_list(file) do
       {:module,name,spec,decls} = :ft.console ['snd','a',[priv_dir(),priv_prefix(),file]]
-      newDecls = substDecls(decls, :maps.put(name,true,dict))
+      newDecls = substImports(decls, :maps.put(name,true,dict))
       {:module,name,spec,newDecls}
   end
 
