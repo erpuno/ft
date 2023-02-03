@@ -133,20 +133,21 @@ defmodule FT do
       [
         mod(:inputProc),
         compile_all(),
-        record(:routeProc, [{:id,[],{:type,1,:list,[]}},
-                            {:operation,[],{:type,1,:term,[]}},
-                            {:feed,[],{:type,1,:term,[]}},
-                            {:type,[],{:type,1,:term,[]}},
-                            {:folder,[],{:type,1,:term,[]}},
-                            {:users,[],{:type,1,:term,[]}},
-                            {:folderType,[],{:type,1,:term,[]}},
-                            {:callback,[],{:type,1,:term,[]}},
-                            {:reject,[],{:type,1,:term,[]}},
-                            {:options,[],{:type,1,:term,[]}}
-                           ]),
-        routeFun(:routeTo, [{'gwConfirmation','Implementation',
-                           [{'approval', ['to'], [], {'Elixir.CRM.KEP','toExecutors'}}
-                           ]}]),
+        record(:routeProc,
+           [{:id,[],{:type,1,:list,[]}},
+            {:operation,[],{:type,1,:term,[]}},
+            {:feed,[],{:type,1,:term,[]}},
+            {:type,[],{:type,1,:term,[]}},
+            {:folder,[],{:type,1,:term,[]}},
+            {:users,[],{:type,1,:term,[]}},
+            {:folderType,[],{:type,1,:term,[]}},
+            {:callback,[],{:type,1,:term,[]}},
+            {:reject,[],{:type,1,:term,[]}},
+            {:options,[],{:type,1,:term,[]}}
+           ]),
+        routeFun(:routeTo,
+           [{'gwConfirmation','Implementation',[{'approval', ['to'], [], {'Elixir.CRM.KEP','toExecutors'}}]}
+           ]),
       ]
   end
 
