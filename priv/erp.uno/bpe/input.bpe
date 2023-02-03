@@ -1,39 +1,39 @@
 module input bpe
 import kvs/routeProc.kvs
 
-fun action broadcastfun begin result [ ] proc stop end
-fun action messagefun process userStarted=system:string begin result [ ] proc stop end
-fun action messagefun payload={:next,*} begin output.bpe.action msg proc end
-fun action messagefun name=DocumentStatistics payload=payload
+fun action broadcastEvent begin result [ ] proc stop end
+fun action messageEvent process userStarted=system:string begin result [ ] proc stop end
+fun action messageEvent payload={:next,*} begin output.bpe.action msg proc end
+fun action messageEvent name=DocumentStatistics payload=payload
 begin personal_stat proc.id executed payload | result [ ] proc stop end
 
-fun action messagefun name=RemoveDocumentStatistics payload=payload
+fun action messageEvent name=RemoveDocumentStatistics payload=payload
 begin remove_personal_stat proc.id executed payload | result [ ] proc stop end
 
-fun action messagefun name=Implementation
+fun action messageEvent name=Implementation
 begin doc = proc.docs.hd | doc.project = projAction execute doc.project msg.payload []
     | proc.docs = [doc] | result [ next { proc.id } ] proc reply end
 
-fun action messagefun name=Executed
+fun action messageEvent name=Executed
 begin result [ generate_history { executed proc.id msg.sender.id proc.docs.hd } spawn Elixir.History
              | next { proc.id } ] proc reply end
 
-fun action messagefun name=TaskCreated
+fun action messageEvent name=TaskCreated
 begin newdoc = proc.docs.hd
     | doc.modified_by = [doc.modified,msg.payload.notify]
     | proc.docs = [doc]
     | result [ ] proc stop end
 
-fun action messagefun begin result [ ] proc stop end
+fun action messageEvent begin result [ ] proc stop end
 
-fun action asyncfun name=ImplementationBlock payload=payload:ERP.bizTask
+fun action asyncEvent name=ImplementationBlock payload=payload:ERP.bizTask
 begin gw_block msg.sender.id "gwConfirmation" proc.id
     | newDoc = proc.docs.hd
     | newDoc.modified_by = [payload.initiator,payload.executor,payload.subexecutors,payload.notify,payload.control_by]
     | newProc = proc
     | newProc.docs = [newDoc]
     | result [ ] newProc stop end
-fun action asyncfun begin :OutputProc.action action msg proc end
+fun action asyncEvent begin :OutputProc.action action msg proc end
 
 fun action request from=Created to=Registration
 begin end
