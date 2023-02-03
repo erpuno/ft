@@ -41,19 +41,27 @@ defmodule FT do
 
   # routeProc{} onstructor invocation generation
 
-  def routeProcInvoke(folder,users,folderType,{mod,fun}) do
-      usrs = :lists.map fn x -> atom(x) end, users
-      ft = case folderType do
-          [] -> var('FT')
-          x when is_binary(x) -> binary(blist(x))
-      end
-      args = [{:folder,binary(folder)},
-              {:folderType,ft},
-              {:users,cons(usrs)},
-              {:callback,fun(atom(mod),atom(fun),2)}]
-      fields = :lists.map fn {name,val} -> {:record_field,1,atom(name),val} end, args
+  def routeProcInvoke(folder,users,folderType,callback) do
+      args = [ folderField(folder),
+               folderTypeField(folderType),
+               usersField(:lists.map fn x -> atom(x) end, users),
+               callbackField(callback)
+             ]
+      fields = :lists.map fn {name,val} -> {:record_field,1,atom(name),val} end, :lists.flatten args
       {:record,1,:routeProc,fields}
   end
+
+  def folderField([]), do: []
+  def folderField(folder), do: {:folder,binary(folder)}
+
+  def folderTypeField([]), do: {:folderType,var('FT')}
+  def folderTypeField(ft) when is_binary(ft), do: {:folderType,binary(blist(ft))}
+
+  def usersField([]), do: []
+  def usersField(users), do: {:users,cons(users)}
+
+  def callbackField([]), do: []
+  def callbackField({mod,fun}), do: {:callback,fun(atom(mod),atom(fun),2)}
 
   # Route clause generator
 
@@ -122,6 +130,8 @@ defmodule FT do
       testFile() |> compileForms
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
         = apply :inputProc, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
+      [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
+      = apply :inputProc, :routeTo, [{:request, 'Created', 'Registration'}, []]
       :ok
   end
 
@@ -146,7 +156,8 @@ defmodule FT do
             {:options,[],{:type,1,:term,[]}}
            ]),
         routeFun(:routeTo,
-           [{'gwConfirmation','Implementation',[{'approval', ['to'], [], {'Elixir.CRM.KEP','toExecutors'}}]}
+           [{'gwConfirmation','Implementation',[{'approval', ['to'], [], {'Elixir.CRM.KEP','toExecutors'}}]},
+            {'Created','Registration',[{'out', ['registered_by'], [], []}]}
            ]),
       ]
   end

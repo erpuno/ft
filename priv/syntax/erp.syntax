@@ -8,20 +8,21 @@
 wholechars abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-*0123456789
 
 context default
-    keyword whole hrl white
-    keyword whole bpe magenta
-    keyword whole kvs magenta
-    keyword whole form magenta
+    keyword whole bpe yellow
+    keyword whole kvs ywllowa
+    keyword whole form yellow
+    keyword whole nitro yellow
+    keyword whole fun yellow
     keyword whole broadcastEvent yellow
     keyword whole messageEvent yellow
     keyword whole request yellow
-    keyword whole import magenta
-    keyword whole record magenta
+    keyword whole import yellow
+    keyword whole record yellow
     keyword whole process magenta
-    keyword whole module magenta
-    keyword whole route magenta
+    keyword whole module yellow
+    keyword whole route yellow
     keyword whole event magenta
-    keyword whole notice magenta
+    keyword whole notice yellow
     keyword whole document yellow
     keyword whole broadcast yellow
     keyword whole asyncEvent yellow
