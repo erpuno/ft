@@ -149,14 +149,11 @@ defmodule FT do
   def dispatchStage('gwND'), do: 'gwNeedsDetermination'
   def dispatchStage(x), do: x
 
-  def dispatchUserField(68), do: :to
-  def dispatchUserField(77), do: :modified_by
-  def dispatchUserField(82), do: :registered_by
-  def dispatchUserField(84), do: :target
-  def dispatchUserField(folder) do
-      :io.format('unknown folder: ~p~n',[folder])
-      []
-  end
+  def dispatchUserField('D'), do: :to
+  def dispatchUserField('M'), do: :modified_by
+  def dispatchUserField('R'), do: :registered_by
+  def dispatchUserField('T'), do: :target
+  def dispatchUserField(_), do: []
 
   def compileForms(ast, out \\ 'priv/out/') do
       :filelib.ensure_dir out
@@ -223,8 +220,8 @@ defmodule FT do
   end
 
   def test do
-      testForm
-      testFile
+      testForm()
+      testFile()
       :passed
   end
 
