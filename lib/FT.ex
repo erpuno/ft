@@ -94,8 +94,8 @@ defmodule FT do
                case :maps.get(latom(blist(import)),dict,[]) do
                   true -> {acc,dict}
                      _ -> {_,_,_,dec} = loadFileAndUnrollImports(blist(import),dict)
-                          {:lists.umerge(acc,dec),:maps.put(latom(blist(import)),true,dict)} end
-             x, {acc,dict} -> {:lists.umerge([x],acc),dict} end, {[],d}, decls)
+                          {acc++dec,:maps.put(latom(blist(import)),true,dict)} end
+             x, {acc,dict} -> {acc++[x],dict} end, {[],d}, decls)
       :lists.flatten(acc)
   end
 
