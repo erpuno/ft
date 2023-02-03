@@ -54,10 +54,9 @@ defmodule FT do
   def folderField([]), do: []
   def folderField(folder), do: {:folder,binary(folder)}
 
-  def folderTypeField('perm'), do: []
-  def folderTypeField('ast'), do: []
   def folderTypeField([]), do: {:folderType,var('FT')}
-  def folderTypeField(ft) when is_binary(ft), do: {:folderType,binary(blist(ft))}
+  def folderTypeField('perm'), do: [{:folderType,var('FT')},{:type,atom(:permanent)}]
+  def folderTypeField(ft), do: {:folderType,binary(ft)}
 
   def usersField([]), do: []
   def usersField('[]'), do: []
@@ -86,7 +85,7 @@ defmodule FT do
   def default(["[]"]), do: []
   def default([str]) when is_binary(str), do: binary(blist(str))
 
-  def compileFile(file \\ testFile()) do
+  def compileFile(file) do
       {:module,name,_spec,decls} = file
       res = :lists.flatten(:lists.map(
       fn
@@ -125,32 +124,32 @@ defmodule FT do
       :lists.flatten(:lists.map(fn char -> dispatchUserField(char) end, users))
   end
 
-  def dispatchFolder('G'), do: 'grouping'
-  def dispatchFolder('P'), do: 'processed'
-  def dispatchFolder('C'), do: 'certification'
-  def dispatchFolder('O'), do: 'out'
-  def dispatchFolder('I'), do: 'created'
-  def dispatchFolder('U'), do: 'urgently'
-  def dispatchFolder('S'), do: 'signing'
-  def dispatchFolder('T'), do: 'tasks'
-  def dispatchFolder('A'), do: 'agreement'
-  def dispatchFolder('V'), do: 'approval'
-  def dispatchFolder('D'), do: 'determination'
-  def dispatchFolder('N'), do: 'sending'
-  def dispatchFolder('J'), do: 'rejectedPersonal'
-  def dispatchFolder('R'), do: 'resolutions'
-  def dispatchFolder('E'), do: 'execution'
+  def dispatchFolder('G'),   do: 'grouping'
+  def dispatchFolder('P'),   do: 'processed'
+  def dispatchFolder('C'),   do: 'certification'
+  def dispatchFolder('O'),   do: 'out'
+  def dispatchFolder('I'),   do: 'created'
+  def dispatchFolder('U'),   do: 'urgently'
+  def dispatchFolder('S'),   do: 'signing'
+  def dispatchFolder('T'),   do: 'tasks'
+  def dispatchFolder('A'),   do: 'agreement'
+  def dispatchFolder('V'),   do: 'approval'
+  def dispatchFolder('D'),   do: 'determination'
+  def dispatchFolder('N'),   do: 'sending'
+  def dispatchFolder('J'),   do: 'rejectedPersonal'
+  def dispatchFolder('R'),   do: 'resolutions'
+  def dispatchFolder('E'),   do: 'execution'
 
-  def dispatchStage('Cr'), do: 'Created'
-  def dispatchStage('Det'), do: 'Determination'
-  def dispatchStage('C'), do: 'Confirmation'
-  def dispatchStage('A'), do: 'Archive'
-  def dispatchStage('gwC'), do: 'gwConfirmation'
-  def dispatchStage('InC'), do: 'InitialConsideration'
-  def dispatchStage('I'), do: 'Implementation'
-  def dispatchStage('R'), do: 'Registration'
+  def dispatchStage('Cr'),   do: 'Created'
+  def dispatchStage('Det'),  do: 'Determination'
+  def dispatchStage('C'),    do: 'Confirmation'
+  def dispatchStage('A'),    do: 'Archive'
+  def dispatchStage('gwC'),  do: 'gwConfirmation'
+  def dispatchStage('InC'),  do: 'InitialConsideration'
+  def dispatchStage('I'),    do: 'Implementation'
+  def dispatchStage('R'),    do: 'Registration'
   def dispatchStage('gwND'), do: 'gwNeedsDetermination'
-  def dispatchStage(x), do: x
+  def dispatchStage(x),      do: x
 
   def dispatchUserField(68), do: :to
   def dispatchUserField(77), do: :modified_by
@@ -193,6 +192,7 @@ defmodule FT do
 
   # Parse file and substutute imports in its declarations
 
+  def load(file \\ "bpe/input.bpe"), do: loadFileAndUnrollImports blist(file)
   def loadFileAndUnrollImports(file,dict \\ %{}) when is_list(file) do
       {:module,name,spec,decls} = loadFile(file)
       {:module,name,spec,unrollImports(decls, :maps.put(name,true,dict))}
@@ -204,27 +204,33 @@ defmodule FT do
   def priv_prefix(), do: '/erp.uno/'
   def priv_dir(),    do: :code.priv_dir(:ft)
 
-  # Sample AST form of route function generation
+  # Test manually created AST forms
 
   def testForms() do
       testForm() |> compileForms
+
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
         = apply :inputProcTest2, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
       [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
         = apply :inputProcTest2, :routeTo, [{:request, 'Created', 'Registration'}, []]
   end
 
+  # Test AST forms parsed from files
+
   def testFiles() do
-      testFile("bpe/org.bpe")        |> compileFile |> compileForms
-      testFile("bpe/internal.bpe")   |> compileFile |> compileForms
-      testFile("bpe/resolution.bpe") |> compileFile |> compileForms
-      testFile("bpe/output.bpe")     |> compileFile |> compileForms
-      testFile("bpe/input.bpe")      |> compileFile |> compileForms
+      load("bpe/org.bpe")        |> compileFile |> compileForms
+      load("bpe/internal.bpe")   |> compileFile |> compileForms
+      load("bpe/resolution.bpe") |> compileFile |> compileForms
+      load("bpe/output.bpe")     |> compileFile |> compileForms
+      load("bpe/input.bpe")      |> compileFile |> compileForms
+
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
         = apply :input, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
       [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
         = apply :input, :routeTo, [{:request, 'Created', 'Registration'}, []]
   end
+
+  # Run tests
 
   def test do
       testForms()
@@ -232,7 +238,8 @@ defmodule FT do
       :passed
   end
 
-  def testFile(file \\ "bpe/input.bpe"), do: loadFileAndUnrollImports blist(file)
+  # Manually created AST sample
+
   def testForm do
       [
         mod(:inputProcTest2),
