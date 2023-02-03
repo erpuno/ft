@@ -44,7 +44,7 @@ defmodule FT do
   def routeProcInvoke(folder,users,folderType,callback) do
       args = [ folderField(folder),
                folderTypeField(folderType),
-               usersField(:lists.map fn x -> atom(x) end, users),
+               usersField(users),
                callbackField(callback)
              ]
       fields = :lists.map fn {name,val} -> {:record_field,1,atom(name),val} end, :lists.flatten args
@@ -58,7 +58,7 @@ defmodule FT do
   def folderTypeField(ft) when is_binary(ft), do: {:folderType,binary(blist(ft))}
 
   def usersField([]), do: []
-  def usersField(users), do: {:users,cons(users)}
+  def usersField(users), do: {:users,cons(:lists.map fn x -> atom(x) end, users)}
 
   def callbackField([]), do: []
   def callbackField({mod,fun}), do: {:callback,fun(atom(mod),atom(fun),2)}
@@ -128,7 +128,7 @@ defmodule FT do
   # Sample AST form of route function generation
 
   def tests() do
-      testFile() |> compileForms
+      testForms() |> compileForms
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
         = apply :inputProc, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
       [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
@@ -136,11 +136,8 @@ defmodule FT do
       :passed
   end
 
-  def testCompileFile(file \\ 'bpe/input.bpe') do
-      loadFileAndUnrollImports file
-  end
-
-  def testFile do
+  def testFile(file \\ 'bpe/input.bpe'), do: loadFileAndUnrollImports file
+  def testForms do
       [
         mod(:inputProc),
         compile_all(),
