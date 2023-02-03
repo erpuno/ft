@@ -84,7 +84,8 @@ defmodule FT do
       :filelib.ensure_dir out
       :code.add_pathz out
       case :compile.forms ast, [:debug_info,:return] do
-         {:ok,name,beam,_} ->
+         {:ok,name,beam,[{_,warn}]} ->
+           :io.format 'warnings: ~p~n', [warn]
            :file.write_file out ++ alist(name) ++ '.beam', beam
            :code.purge name
            :code.load_file name
@@ -143,7 +144,7 @@ defmodule FT do
       [
         mod(:inputProc),
         compile_all(),
-        record(:routeProc,
+        record(:routeProc, :lists.flatten(
            [{:id,[],{:type,1,:list,[]}},
             {:operation,[],{:type,1,:term,[]}},
             {:feed,[],{:type,1,:term,[]}},
@@ -154,11 +155,11 @@ defmodule FT do
             {:callback,[],{:type,1,:term,[]}},
             {:reject,[],{:type,1,:term,[]}},
             {:options,[],{:type,1,:term,[]}}
-           ]),
-        routeFun(:routeTo,
+           ])),
+        routeFun(:routeTo, :lists.flatten(
            [{'gwConfirmation','Implementation',[{'approval', ['to'], [], {'Elixir.CRM.KEP','toExecutors'}}]},
             {'Created','Registration',[{'out', ['registered_by'], [], []}]}
-           ]),
+           ])),
       ]
   end
 
