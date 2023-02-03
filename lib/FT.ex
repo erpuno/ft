@@ -42,12 +42,11 @@ defmodule FT do
   # routeProc{} onstructor invocation generation
 
   def routeProcInvoke(folder,users,folderType,callback) do
-      args = [ folderField(folder),
-               folderTypeField(folderType),
-               usersField(users),
-               callbackField(callback)
-             ]
-      fields = :lists.map fn {name,val} -> {:record_field,1,atom(name),val} end, :lists.flatten args
+      fields = :lists.map fn {name,val} -> {:record_field,1,atom(name),val} end,
+               :lists.flatten [ folderField(folder),
+                                folderTypeField(folderType),
+                                usersField(users),
+                                callbackField(callback) ]
       {:record,1,:routeProc,fields}
   end
 
