@@ -1,4 +1,5 @@
 module internal bpe
+import kvs/routeProc.kvs
 
 route routeTo
 begin (*,I): | (I,gwC):O,T,fromExecutors

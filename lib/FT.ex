@@ -54,6 +54,8 @@ defmodule FT do
   def folderField([]), do: []
   def folderField(folder), do: {:folder,binary(folder)}
 
+  def folderTypeField('perm'), do: []
+  def folderTypeField('ast'), do: []
   def folderTypeField([]), do: {:folderType,var('FT')}
   def folderTypeField(ft) when is_binary(ft), do: {:folderType,binary(blist(ft))}
 
@@ -96,9 +98,10 @@ defmodule FT do
           {:route,{:name,name}, [], calls} ->
                routeFun(latom(blist(name)), :lists.map(fn {:call,[y]} ->
                   x = blist(y)
-                  [l,r] = :string.tokens(x,':')
+                  [l,r] = case :string.tokens(x,':') do [a1,a2] -> [a1,a2] ; [a1] -> [a1,[]] end
                   [s,d] = :string.tokens(:string.trim(l,:both,'()'),',')
                   clauses = :string.tokens(r,';')
+#                 :io.format 'debug route: ~p~n', [{s,d,clauses}]
                   {dispatchStage(s),dispatchStage(d),
                       :lists.flatten(:lists.map(fn x ->
                          case :string.tokens(x,',') do
@@ -149,11 +152,11 @@ defmodule FT do
   def dispatchStage('gwND'), do: 'gwNeedsDetermination'
   def dispatchStage(x), do: x
 
-  def dispatchUserField('D'), do: :to
-  def dispatchUserField('M'), do: :modified_by
-  def dispatchUserField('R'), do: :registered_by
-  def dispatchUserField('T'), do: :target
-  def dispatchUserField(_), do: []
+  def dispatchUserField(68), do: :to
+  def dispatchUserField(77), do: :modified_by
+  def dispatchUserField(82), do: :registered_by
+  def dispatchUserField(84), do: :target
+  def dispatchUserField(_ ), do: []
 
   def compileForms(ast, out \\ 'priv/out/') do
       :filelib.ensure_dir out
@@ -166,7 +169,7 @@ defmodule FT do
            :code.load_file name
            {name,beam}
          x ->
-           :io.format 'errprs: ~p~n', [x]
+           :io.format 'errors: ~p~n', [x]
            {[],[]}
       end
   end
@@ -212,7 +215,11 @@ defmodule FT do
   end
 
   def testFiles() do
-      testFile() |> compileFile |> compileForms
+      testFile("bpe/org.bpe")        |> compileFile |> compileForms
+      testFile("bpe/internal.bpe")   |> compileFile |> compileForms
+      testFile("bpe/resolution.bpe") |> compileFile |> compileForms
+      testFile("bpe/output.bpe")     |> compileFile |> compileForms
+      testFile("bpe/input.bpe")      |> compileFile |> compileForms
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
         = apply :input, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
       [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
@@ -220,12 +227,12 @@ defmodule FT do
   end
 
   def test do
-      testForm()
-      testFile()
+      testForms()
+      testFiles()
       :passed
   end
 
-  def testFile(file \\ 'bpe/input.bpe'), do: loadFileAndUnrollImports file
+  def testFile(file \\ "bpe/input.bpe"), do: loadFileAndUnrollImports blist(file)
   def testForm do
       [
         mod(:inputProcTest2),

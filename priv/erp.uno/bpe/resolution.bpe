@@ -1,4 +1,5 @@
 module resolution bpe
+import kvs/routeProc.kvs
 
 route routeTo
 begin (*,D):R,I,perm

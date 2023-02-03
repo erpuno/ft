@@ -1,15 +1,16 @@
 module output bpe
+import kvs/routeProc.kvs
 
 route routeTo
-begin (*,D):I,R,,perm | (*,A):A,A,toApprover;T,A,toApprover
-    | (D,A):O,R,,perm;A,A,toApprover;T,A,toApprover | (A,gwA):O,A,fromApprover,perm
+begin (*,D):I,R,,,perm | (*,A):A,A,toApprover;T,A,toApprover
+    | (D,A):O,R,,,perm;A,A,toApprover;T,A,toApprover | (A,gwA):O,A,,fromApprover,perm
     | (gwA,A):A,A,toApprover;T,A,toApprover | (gwV,Cv):A,A,fromApprover;T,A,fromApprover
-    | (*,S):S,S;T,S | (gwS,gwNC):O,S,,perm | (gwNC,C):C,[] | (gwNC,Se):Se,[] | (*,Se):Se,[]
-    | (*,S2):Se,[] | (*,G):G,[];P,RAS;P,[],toCertifiers | (*,A):A,[] end
+    | (*,S):S,S;T,S | (gwS,gwNC):O,S,,,perm | (gwNC,C):C,[] | (gwNC,Se):N,[] | (*,Se):N,[]
+    | (*,S2):N,[] | (*,G):G,[];P,RAS;P,[],toCertifiers | (*,A):A,[] end
 
 route routeFrom
 begin (gwA,D):A,A;T,A;O,A | (gwS,D):S,S;A,A;T,AS;O,A
-    | (*,A):A,A,toApprover;T,A,toApprover | (D,A):Rp,R;T,R
+    | (*,A):A,A,toApprover;T,A,toApprover | (D,A):J,R;T,R
     | (A,gwA):A,A,fromApprover,ast;T,A,fromApprover,ast | (*,S):S,S;T,S
     | (gwV,S):A,A,fromApprover;T,A,fromApprover | (*,gwNC):S,S,,ast;T,S,,ast
-    | (C,S):C,[] | (*,G):Se,[] | (G,A):G,[];I,R;O,ASR;A,A;S,S;T,AS end
+    | (C,S):C,[] | (*,G):N,[] | (G,A):G,[];I,R;O,ASR;A,A;S,S;T,AS end
