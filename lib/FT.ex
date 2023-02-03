@@ -126,13 +126,13 @@ defmodule FT do
 
   # Sample AST form of route function generation
 
-  def test() do
+  def tests() do
       testFile() |> compileForms
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
         = apply :inputProc, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
       [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
-      = apply :inputProc, :routeTo, [{:request, 'Created', 'Registration'}, []]
-      :ok
+        = apply :inputProc, :routeTo, [{:request, 'Created', 'Registration'}, []]
+      :passed
   end
 
   def testCompileFile(file \\ 'bpe/input.bpe') do
