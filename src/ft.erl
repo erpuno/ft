@@ -13,9 +13,9 @@ console([]) ->
    [ proplists:get_value(copyright,module_info(attributes)),
      proplists:get_value(vsn,module_info(attributes))]),
   io:format("   Usage := :ft.console [ cmds ] ~n"),
-  io:format("    args := [] | word args ~n"),
-  io:format("    cmds := [] | command | command args ~n"),
-  io:format(" command := parse | lex | read | fst | snd | load | file ~n~n~n"),
+  io:format("    args := <empty> | <word> args ~n"),
+  io:format("    cmds := <empty> | command args ~n"),
+  io:format(" command := parse | lex | read | fst | snd | load | file ~n~n"),
   io:format(" Sample: :ft.console ['snd','load','priv/erp.uno/form/input.form']  ~n~n"),
   0;
 

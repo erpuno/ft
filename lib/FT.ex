@@ -7,7 +7,7 @@ defmodule FT do
   # [x] route
   # [x] import
   # [ ] notice
-  # [ ] event
+  # [ ] fun
   # [ ] form
 
   # Erlang AST definitions
