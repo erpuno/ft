@@ -78,7 +78,12 @@ defmodule FT do
       {:function,1,name,2,routeClauses}
   end
 
-  # Compile AST form to disk and reload
+  # Compile Erlang AST forms to disk and reload
+
+  def compileFile(file \\ testFile()) do
+      :io.format 'compile: ~ts.~ts~n', [:erlang.element(2,file), :erlang.element(3,file)]
+      testForms()
+  end
 
   def compileForms(ast, out \\ 'priv/out/') do
       :filelib.ensure_dir out
@@ -129,6 +134,7 @@ defmodule FT do
 
   def tests() do
       testForms() |> compileForms
+      testFile() |> compileFile |> compileForms
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
         = apply :inputProc, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
       [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
