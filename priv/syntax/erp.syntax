@@ -9,7 +9,7 @@ wholechars abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-*0123456789
 
 context default
     keyword whole bpe yellow
-    keyword whole kvs ywllowa
+    keyword whole kvs yellow
     keyword whole form yellow
     keyword whole nitro yellow
     keyword whole fun yellow

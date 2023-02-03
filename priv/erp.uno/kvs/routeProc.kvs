@@ -9,5 +9,5 @@ begin id = [] : list
     | users = [] : binary + list
     | folderType = "personal" : binary
     | callback = [] : [] + function
-    | reject = false : false + boolean
+    | reject = [] : [] + boolean
     | options = [] : [] + list end

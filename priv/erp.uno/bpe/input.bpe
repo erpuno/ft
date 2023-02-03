@@ -73,9 +73,9 @@ begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
     | result [ general req newState newDoc | stop ] newState reply proc.executors end
 
 route routeTo
-begin (Cr,R):R,[] | (R,gwND):O,R | (gwND,Det):D,[] | (*,InC):A,To
-    | (gwC,I):A,To,toExecutors | (*,G):G,[];P,M | (*,A):A,[] end
+begin (Cr,R):O,R | (R,gwND):O,R | (gwND,Det):D,[] | (*,InC):A,D
+    | (gwC,I):V,D,toExecutors | (*,G):G,[];P,M | (*,A):A,[] end
 
 route routeFrom
-begin (R,gwND):R,[] | (Det,InC):D,[] | (InC,I):A,To,fromExecutors | (I,gwC):A,To,fromExecutors
-    | (gwR,I):G,[] | (*,G):A,To | (*,A):G,[];O,R;U,RTo;R,[];D,[] end
+begin (R,gwND):R,[] | (Det,InC):D,[] | (InC,I):A,D,fromExecutors | (I,gwC):A,D,fromExecutors
+    | (gwR,I):G,[] | (*,G):A,D | (*,A):G,[];O,R;U,RD;R,[];D,[] end

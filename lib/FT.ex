@@ -33,6 +33,7 @@ defmodule FT do
               x when is_integer(x) -> integer(x)
               x when is_list(x) -> string(x)
               x when is_binary(x) -> binary(blist(x))
+              x -> x
           end
           {:typed_record_field,{:record_field,1,atom(name),default},type}
           end, fields)
@@ -57,6 +58,7 @@ defmodule FT do
   def folderTypeField(ft) when is_binary(ft), do: {:folderType,binary(blist(ft))}
 
   def usersField([]), do: []
+  def usersField('[]'), do: []
   def usersField(users), do: {:users,cons(:lists.map fn x -> atom(x) end, users)}
 
   def callbackField([]), do: []
@@ -79,22 +81,95 @@ defmodule FT do
 
   # Compile Erlang AST forms to disk and reload
 
+  def default(["[]"]), do: []
+  def default([str]) when is_binary(str), do: binary(blist(str))
+
   def compileFile(file \\ testFile()) do
-      :io.format 'compile: ~ts.~ts~n', [:erlang.element(2,file), :erlang.element(3,file)]
-      testForms()
+      {:module,name,_spec,decls} = file
+      res = :lists.flatten(:lists.map(
+      fn
+          {:record,{:name,name},[],fields} ->
+               record(latom(blist(name)),
+                  :lists.map(fn {:field, name, defx, _type} ->
+                      {latom(blist(name)),default(defx),{:type,1,:term,[]}}
+               end, fields))
+          {:route,{:name,name}, [], calls} ->
+               routeFun(latom(blist(name)), :lists.map(fn {:call,[y]} ->
+                  x = blist(y)
+                  [l,r] = :string.tokens(x,':')
+                  [s,d] = :string.tokens(:string.trim(l,:both,'()'),',')
+                  clauses = :string.tokens(r,';')
+                  {dispatchStage(s),dispatchStage(d),
+                      :lists.flatten(:lists.map(fn x ->
+                         case :string.tokens(x,',') do
+                           [] -> []
+                           [_folder] -> []
+                           [folder,users] -> {dispatchFolder(folder),dispatchUserFields(users),[],[]}
+                           [folder,users,callback] -> {dispatchFolder(folder),dispatchUserFields(users),[],{'Elixir.CRM.KEP',callback}}
+                           [folder,users,callback,folderType] -> {dispatchFolder(folder),dispatchUserFields(users),folderType,{'Elixir.CRM.KEP',callback}}
+                        end
+                      end, clauses))}
+               end, calls))
+          _x -> []
+      end, decls))
+      [ mod(latom(blist(name))),
+        compile_all()
+      ] ++ res
+  end
+
+  def dispatchUserFields('[]'), do: []
+  def dispatchUserFields(users) do
+      :lists.flatten(:lists.map(fn char -> dispatchUserField(char) end, users))
+  end
+
+  def dispatchFolder('G'), do: 'grouping'
+  def dispatchFolder('P'), do: 'processed'
+  def dispatchFolder('C'), do: 'certification'
+  def dispatchFolder('O'), do: 'out'
+  def dispatchFolder('I'), do: 'created'
+  def dispatchFolder('U'), do: 'urgently'
+  def dispatchFolder('S'), do: 'signing'
+  def dispatchFolder('T'), do: 'tasks'
+  def dispatchFolder('A'), do: 'agreement'
+  def dispatchFolder('V'), do: 'approval'
+  def dispatchFolder('D'), do: 'determination'
+  def dispatchFolder('N'), do: 'sending'
+  def dispatchFolder('J'), do: 'rejectedPersonal'
+  def dispatchFolder('R'), do: 'resolutions'
+  def dispatchFolder('E'), do: 'execution'
+
+  def dispatchStage('Cr'), do: 'Created'
+  def dispatchStage('Det'), do: 'Determination'
+  def dispatchStage('C'), do: 'Confirmation'
+  def dispatchStage('A'), do: 'Archive'
+  def dispatchStage('gwC'), do: 'gwConfirmation'
+  def dispatchStage('InC'), do: 'InitialConsideration'
+  def dispatchStage('I'), do: 'Implementation'
+  def dispatchStage('R'), do: 'Registration'
+  def dispatchStage('gwND'), do: 'gwNeedsDetermination'
+  def dispatchStage(x), do: x
+
+  def dispatchUserField(68), do: :to
+  def dispatchUserField(77), do: :modified_by
+  def dispatchUserField(82), do: :registered_by
+  def dispatchUserField(84), do: :target
+  def dispatchUserField(folder) do
+      :io.format('unknown folder: ~p~n',[folder])
+      []
   end
 
   def compileForms(ast, out \\ 'priv/out/') do
       :filelib.ensure_dir out
       :code.add_pathz out
       case :compile.forms ast, [:debug_info,:return] do
-         {:ok,name,beam,[{_,warn}]} ->
-           :io.format 'warnings: ~p~n', [warn]
+         {:ok,name,beam,[{_,_warn}]} ->
+#           :io.format 'warnings: ~p~n', [:erlang.element(3,hd(warn))]
            :file.write_file out ++ alist(name) ++ '.beam', beam
            :code.purge name
            :code.load_file name
            {name,beam}
-         _ ->
+         x ->
+           :io.format 'errprs: ~p~n', [x]
            {[],[]}
       end
   end
@@ -131,20 +206,32 @@ defmodule FT do
 
   # Sample AST form of route function generation
 
-  def tests() do
-      testForms() |> compileForms
+  def testForms() do
+      testForm() |> compileForms
+      [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
+        = apply :inputProcTest2, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
+      [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
+        = apply :inputProcTest2, :routeTo, [{:request, 'Created', 'Registration'}, []]
+  end
+
+  def testFiles() do
       testFile() |> compileFile |> compileForms
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
-        = apply :inputProc, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
+        = apply :input, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
       [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
-        = apply :inputProc, :routeTo, [{:request, 'Created', 'Registration'}, []]
+        = apply :input, :routeTo, [{:request, 'Created', 'Registration'}, []]
+  end
+
+  def test do
+      testForm
+      testFile
       :passed
   end
 
   def testFile(file \\ 'bpe/input.bpe'), do: loadFileAndUnrollImports file
-  def testForms do
+  def testForm do
       [
-        mod(:inputProc),
+        mod(:inputProcTest2),
         compile_all(),
         record(:routeProc, :lists.flatten(
            [{:id,[],{:type,1,:list,[]}},
