@@ -1,5 +1,7 @@
 defmodule FT do
 
+  def boot(), do: Tests.compilePrivFolder
+
   # Erlang AST definitions
 
   def cons([]), do: {:nil,1}
@@ -62,7 +64,8 @@ defmodule FT do
 
   # Parse file and substutute imports in its declarations
 
-  def load(file \\ "bpe/input.bpe"), do: loadFileAndUnrollImports blist(file)
+  def load(file) when is_list(file), do: loadFileAndUnrollImports file
+  def load(file) when is_binary(file), do: loadFileAndUnrollImports blist(file)
   def loadFileAndUnrollImports(file,dict \\ %{}) when is_list(file) do
       {:module,name,spec,decls} = loadFile(file)
       {:module,name,spec,unrollImports(decls, :maps.put(name,true,dict))}
@@ -86,16 +89,17 @@ defmodule FT do
   def latom(x),      do: :erlang.list_to_atom x
   def alist(x),      do: :erlang.atom_to_list x
   def blist(x),      do: :erlang.binary_to_list x
-  def priv_prefix(), do: '/erp.uno/'
-  def priv_dir(),    do: :code.priv_dir(:ft)
+  def priv_prefix(), do: :application.get_env(:ft,:priv_prefix,'/erp.uno/')
+  def priv_dir(),    do: :application.get_env(:ft,:priv_dir,:code.priv_dir(:ft))
 
   # Compile Erlang AST forms to disk and reload
 
   def default(["[]"]), do: []
   def default([str]) when is_binary(str), do: binary(blist(str))
+  def default(_), do: []
 
   def compileFile(file) do
-      {:module,name,_spec,decls} = file
+      {:module,name,spec,decls} = file
       res = :lists.flatten(:lists.map(
       fn
           {:record,{:name,name},[],fields} ->
@@ -123,7 +127,7 @@ defmodule FT do
                end, calls))
           _x -> []
       end, decls))
-      [ mod(latom(blist(name))),
+      [ mod(latom(alist(spec) ++ '.' ++ blist(name))),
         compile_all()
       ] ++ res
   end

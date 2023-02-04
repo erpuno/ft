@@ -1,5 +1,14 @@
 defmodule Tests do
 
+  def compilePrivFolder() do
+      files = :filelib.wildcard('priv' ++ FT.priv_prefix() ++ '{bpe,form,kvs,nitro}/**/*')
+      :lists.map(fn file ->
+          case file do
+             'priv/erp.uno/' ++ f -> FT.load(f) |> FT.compileFile |> FT.compileForms
+          end
+      end, files)
+  end
+
   # Test manually created AST forms
 
   def testForms() do
@@ -14,21 +23,16 @@ defmodule Tests do
   # Test AST forms parsed from files
 
   def testFiles() do
-      FT.load("bpe/org.bpe")        |> FT.compileFile |> FT.compileForms
-      FT.load("bpe/internal.bpe")   |> FT.compileFile |> FT.compileForms
-      FT.load("bpe/resolution.bpe") |> FT.compileFile |> FT.compileForms
-      FT.load("bpe/output.bpe")     |> FT.compileFile |> FT.compileForms
-      FT.load("bpe/input.bpe")      |> FT.compileFile |> FT.compileForms
-
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
-        = apply :input, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
+        = apply :'bpe.input', :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
       [{:routeProc, [], [], [], [], "out", [:registered_by], [], [], [], []}]
-        = apply :input, :routeTo, [{:request, 'Created', 'Registration'}, []]
+        = apply :'bpe.input', :routeTo, [{:request, 'Created', 'Registration'}, []]
   end
 
   # Run tests
 
   def run do
+      compilePrivFolder()
       testForms()
       testFiles()
       :passed
