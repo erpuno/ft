@@ -98,40 +98,49 @@ defmodule FT do
   def default([str]) when is_binary(str), do: binary(blist(str))
   def default(_), do: []
 
-  def compileFile(file) do
-      {:module,name,spec,decls} = file
-      res = :lists.flatten(:lists.map(
-      fn
-          {:record,{:name,name},[],fields} ->
-               record(latom(blist(name)),
-                  :lists.map(fn {:field, name, defx, _type} ->
-                      {latom(blist(name)),default(defx),{:type,1,:term,[]}}
-               end, fields))
-          {:route,{:name,name}, [], calls} ->
-               routeFun(latom(blist(name)), :lists.map(fn {:call,[y]} ->
-                  x = blist(y)
-                  [l,r] = case :string.tokens(x,':') do [a1,a2] -> [a1,a2] ; [a1] -> [a1,[]] end
-                  [s,d] = :string.tokens(:string.trim(l,:both,'()'),',')
-                  clauses = :string.tokens(r,';')
-#                 :io.format 'debug route: ~p~n', [{s,d,clauses}]
-                  {Stages.dis(s),Stages.dis(d),
-                      :lists.flatten(:lists.map(fn x ->
-                         case :string.tokens(x,',') do
-                           [] -> []
-                           [_folder] -> []
-                           [folder,users] -> {Folders.dis(folder),Fields.dis(users),[],[]}
-                           [folder,users,callback] -> {Folders.dis(folder),Fields.dis(users),[],{'Elixir.CRM.KEP',callback}}
-                           [folder,users,callback,folderType] -> {Folders.dis(folder),Fields.dis(users),folderType,{'Elixir.CRM.KEP',callback}}
-                        end
-                      end, clauses))}
-               end, calls))
-          _x -> []
-      end, decls))
-      [ mod(latom(alist(spec) ++ '.' ++ blist(name))),
-        compile_all()
-      ] ++ res
+  def compileRecord(name,fields) do
+      record(latom(blist(name)),
+          :lists.map(fn {:field, name, defx, _type} ->
+              {latom(blist(name)),default(defx),{:type,1,:term,[]}}
+          end, fields))
   end
 
+  def compileEvent(_name, _decls) do
+      []
+  end
+
+  def compileRoute(name,calls) do
+      routeFun(latom(blist(name)), :lists.map(fn {:call,[y]} ->
+          x = blist(y)
+          [l,r] = case :string.tokens(x,':') do [a1,a2] -> [a1,a2] ; [a1] -> [a1,[]] end
+          [s,d] = :string.tokens(:string.trim(l,:both,'()'),',')
+          clauses = :string.tokens(r,';')
+#         :io.format 'debug route: ~p~n', [{s,d,clauses}]
+          {Stages.dis(s),Stages.dis(d),
+              :lists.flatten(:lists.map(fn x ->
+                 case :string.tokens(x,',') do
+                      [] -> []
+                      [_folder] -> []
+                      [folder,users] -> {Folders.dis(folder),Fields.dis(users),[],[]}
+                      [folder,users,callback] -> {Folders.dis(folder),Fields.dis(users),[],{'Elixir.CRM.KEP',callback}}
+                      [folder,users,callback,folderType] -> {Folders.dis(folder),Fields.dis(users),folderType,{'Elixir.CRM.KEP',callback}}
+                 end
+              end, clauses))}
+          end, calls))
+  end
+
+  def compileFile(file), do: compileFormalTalkFile(file)
+  def compileFormalTalkFile(file) do
+      {:module,name,spec,decls} = file
+      [ mod(latom(alist(spec) ++ '.' ++ blist(name))), compile_all() ] ++
+      :lists.flatten(:lists.map(fn
+          {:record,{:name,name},[],fields} -> compileRecord(name,fields)
+          {:route,{:name,name}, [], calls} -> compileRoute(name,calls)
+          {:event,{:name,name}, [], decls} -> compileEvent(name,decls)
+          _ -> [] end, decls))
+  end
+
+  def compileErlangForms(ast, out), do: compileForms(ast, out)
   def compileForms(ast, out \\ 'priv/out/') do
       :filelib.ensure_dir out
       :code.add_pathz out
