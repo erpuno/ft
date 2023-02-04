@@ -109,6 +109,14 @@ defmodule FT do
       []
   end
 
+  def compileNotice(_name, _decls) do
+      []
+  end
+
+  def compileForm(_name, _decls) do
+      []
+  end
+
   def compileRoute(name,calls) do
       routeFun(latom(blist(name)), :lists.map(fn {:call,[y]} ->
           x = blist(y)
@@ -134,9 +142,11 @@ defmodule FT do
       {:module,name,spec,decls} = file
       [ mod(latom(alist(spec) ++ '.' ++ blist(name))), compile_all() ] ++
       :lists.flatten(:lists.map(fn
-          {:record,{:name,name},[],fields} -> compileRecord(name,fields)
+          {:record,{:name,name}, [], fields} -> compileRecord(name,fields)
           {:route,{:name,name}, [], calls} -> compileRoute(name,calls)
           {:event,{:name,name}, [], decls} -> compileEvent(name,decls)
+          {:notice,{:name,name}, [], decls} -> compileNotice(name,decls)
+          {:form,{:name,name}, [], decls} -> compileForm(name,decls)
           _ -> [] end, decls))
   end
 
