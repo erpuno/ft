@@ -10,9 +10,11 @@ begin personal_stat proc.id executed payload | result [ ] proc stop end
 fun action messageEvent name=RemoveDocumentStatistics payload=payload
 begin remove_personal_stat proc.id executed payload | result [ ] proc stop end
 
-fun action messageEvent name=Implementation
-begin doc = proc.docs.hd | doc.project = projAction execute doc.project msg.payload []
-    | proc.docs = [doc] | result [ next { proc.id } ] proc reply end
+fun action messageEvent name=Implementation payload=payload
+begin doc = proc.docs.hd
+    | doc:project = projAction execute doc:project msg.payload []
+    | proc.docs = [doc]
+    | result [ next { proc.id } ] proc reply end
 
 fun action messageEvent name=Executed
 begin result [ generate_history { executed proc.id msg.sender.id proc.docs.hd } spawn Elixir.History
@@ -39,23 +41,33 @@ fun action request from=Created to=Registration
 begin end
 
 fun action request from=Registration to=gwNeedsDetermination
-begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
-    | indexUrgent newProc newDoc | newState = actionGen req proc newProc
+begin newDoc = proc.docs.hd
+    | newProc = proc
+    | newProc.docs = [newDoc]
+    | indexUrgent newProc newDoc
+    | newState = actionGen req proc newProc
     | result [ general req newState newDoc | stop ] newState reply proc.executors end
 
 fun action request from=InitialConsideration
-begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
+begin newDoc = proc.docs.hd
+    | newProc = proc
+    | newProc.docs = [newDoc]
     | newProc = actionGen req proc newProc
     | result [ general req newProc newDoc | stop ] newProc reply proc.executors end
 
 fun action request from=Implementation to=gwConfirmation
 begin newDoc = proc.docs.hd
-    | newProc = proc | newProc.docs = [newDoc] | newProc = actionGen req proc newProc
+    | newProc = proc
+    | newProc.docs = [newDoc]
+    | newProc = actionGen req proc newProc
     | result [ general req newProc newDoc | next proc.id ] newProc reply proc.executors end
 
 fun action request to=Grouping
-begin newDoc = proc.docs.hd | newProc = proc | newProc.docs = [newDoc]
-    | broadcast "Complete" | newProc = actionGen req proc newProc
+begin newDoc = proc.docs.hd
+    | newProc = proc
+    | newProc.docs = [newDoc]
+    | broadcast "Complete"
+    | newProc = actionGen req proc newProc
     | result [ general req newProc newDoc | stop ] newProc reply proc.executors end
 
 fun action request to=gwRejected
