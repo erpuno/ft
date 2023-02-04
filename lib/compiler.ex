@@ -150,13 +150,13 @@ defmodule FT do
           _ -> [] end, decls))
   end
 
-  def compileErlangForms(ast, out), do: compileForms(ast, out)
-  def compileForms(ast, out \\ 'priv/out/') do
+  def compileForms(ast, out \\ 'priv/out/'), do: compileErlangForms(ast, out)
+  def compileErlangForms(ast, out) do
       :filelib.ensure_dir out
       :code.add_pathz out
       case :compile.forms ast, [:debug_info,:return] do
          {:ok,name,beam,[{_,_warn}]} ->
-#           :io.format 'warnings: ~p~n', [:erlang.element(3,hd(warn))]
+#          :io.format 'warnings: ~p~n', [warn]
            :file.write_file out ++ alist(name) ++ '.beam', beam
            :code.purge name
            :code.load_file name
