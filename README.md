@@ -23,14 +23,14 @@ for business designer.
 $ mix deps.get
 $ iex -S mix
 > :ft.console []
-FormalTalk ERP.UNO Language INFOTECH SE 3.1.0
+FormalTalk: ERP.UNO Compiler © ДП «ІНФОТЕХ» 3.2.2
 
-   Usage := :ft.console [ args <filename> ]
-    args := command | command args
- command := parse | lex | read | fst | snd | file
+   Usage := :ft.console [ cmds ]
+    args := <empty> | <word> args
+    cmds := <empty> | command args
+ command := parse | lex | read | fst | snd | load | file
 
-
- Sample: :ft.console ['parse','file','priv/kvs/person.kvs' ]
+ Sample: :ft.console ['snd','load','priv/erp.uno/form/input.form']
 ```
 
 KVS module sample:
