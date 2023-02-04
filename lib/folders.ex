@@ -15,5 +15,6 @@ defmodule Folders do
   def dis('J'),   do: 'rejectedPersonal'
   def dis('R'),   do: 'resolutions'
   def dis('E'),   do: 'execution'
+  def dis(x),     do: x
 
 end
