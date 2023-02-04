@@ -1,12 +1,9 @@
 defmodule Tests do
 
   def compilePrivFolder() do
-      files = :filelib.wildcard('priv' ++ FT.priv_prefix() ++ '{bpe,form,kvs,nitro}/**/*')
-      :lists.map(fn file ->
-          case file do
-             'priv/erp.uno/' ++ f -> FT.load(f) |> FT.compileFile |> FT.compileForms
-          end
-      end, files)
+      files = :filelib.wildcard('priv/erp.uno/' ++ '{bpe,form,kvs,nitro}/**/*')
+      :lists.map(fn file -> case file do 'priv/erp.uno/' ++ f ->
+          FT.load(f) |> FT.compileFile |> FT.compileForms end end, files)
   end
 
   # Test manually created AST forms
