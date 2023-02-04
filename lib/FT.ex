@@ -105,7 +105,7 @@ defmodule FT do
                       :lists.flatten(:lists.map(fn x ->
                          case :string.tokens(x,',') do
                            [] -> []
-                           [_folder] -> []
+                           [folder] -> {dispatchFolder(folder),[],[],[]}
                            [folder,users] -> {dispatchFolder(folder),dispatchUserFields(users),[],[]}
                            [folder,users,callback] -> {dispatchFolder(folder),dispatchUserFields(users),[],{'Elixir.CRM.KEP',callback}}
                            [folder,users,callback,folderType] -> {dispatchFolder(folder),dispatchUserFields(users),folderType,{'Elixir.CRM.KEP',callback}}
