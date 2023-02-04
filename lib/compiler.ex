@@ -92,7 +92,7 @@ defmodule FT do
   def priv_prefix(), do: :application.get_env(:ft,:priv_prefix,'/erp.uno/')
   def priv_dir(),    do: :application.get_env(:ft,:priv_dir,:code.priv_dir(:ft))
 
-  # Compile Erlang AST forms to disk and reload
+  # Compile FormalTalk File to Erlang AST forms
 
   def default(["[]"]), do: []
   def default([str]) when is_binary(str), do: binary(blist(str))
@@ -137,7 +137,6 @@ defmodule FT do
           end, calls))
   end
 
-  def compileFile(file), do: compileFormalTalkFile(file)
   def compileFormalTalkFile(file) do
       {:module,name,spec,decls} = file
       [ mod(latom(alist(spec) ++ '.' ++ blist(name))), compile_all() ] ++
@@ -150,8 +149,7 @@ defmodule FT do
           _ -> [] end, decls))
   end
 
-  def compileForms(ast, out \\ 'priv/out/'), do: compileErlangForms(ast, out)
-  def compileErlangForms(ast, out) do
+  def compileErlangForms(ast, out \\ 'priv/out/') do
       :filelib.ensure_dir out
       :code.add_pathz out
       case :compile.forms ast, [:debug_info,:return] do

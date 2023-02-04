@@ -3,13 +3,13 @@ defmodule Tests do
   def compilePrivFolder() do
       files = :filelib.wildcard('priv/erp.uno/' ++ '{bpe,form,kvs,nitro}/**/*')
       :lists.map(fn file -> case file do 'priv/erp.uno/' ++ f ->
-          FT.load(f) |> FT.compileFile |> FT.compileForms end end, files)
+          FT.load(f) |> FT.compileFormalTalkFile |> FT.compileErlangForms end end, files)
   end
 
   # Test manually created AST forms
 
   def testForms() do
-      testForm() |> FT.compileForms
+      testForm() |> FT.compileErlangForms
 
       [{:routeProc, [], [], [], [], "approval", [:to], [], _, [], []}]
         = apply :inputProcTest2, :routeTo, [{:request, 'gwConfirmation', 'Implementation'}, []]
