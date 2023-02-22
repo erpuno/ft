@@ -5,7 +5,7 @@ FT: FormalTalk ERP.UNO Compiler
 [![Hex pm](https://img.shields.io/hexpm/v/ft.svg?style=flat)](https://hex.pm/packages/ft)
 
 <div align=center><img src="https://tonpa.guru/stream/2023/FT-23.svg"></div>
-
+<br><br>
 FormalTalk is the LEEX/YECC front-end to DSL of BPE, FORM and KVS
 programming -- the core libraries of ERP.UNO State Enterprise open-source stack.
 
