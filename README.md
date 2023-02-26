@@ -1,4 +1,4 @@
-FT: FormalTalk ERP.UNO Compiler
+FT: FormalTalk ERP/1 Compiler
 ===============================
 
 [![Actions Status](https://github.com/erpuno/ft/workflows/mix/badge.svg)](https://github.com/erpuno/ft/actions)
