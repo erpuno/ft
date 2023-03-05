@@ -160,7 +160,7 @@ defmodule FT do
            :code.load_file name
            {name,beam}
          x ->
-           :io.format 'errors: ~p~n', [x]
+           :io.format 'errors in ~tp: ~p~n', [ast,x]
            {[],[]}
       end
   end

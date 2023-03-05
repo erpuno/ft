@@ -1,0 +1,5 @@
+module Sample.Route nitro
+
+fun page "index" begin ret Sample.Index end
+fun page "login" begin ret Sample.Login end
+fun port         begin ret 8050         end

@@ -1,0 +1,12 @@
+module Sample.Login nitro
+
+fun event :init
+begin login_button = NITRO.button{id=:loginButton,body="HELO",postback=:login,source=[:user,:room]}
+    | nitro:update :loginButton login_button end
+
+fun event :login
+begin user = nitro:q :user
+    | room = nitro:q :room
+    | n2o:user user
+    | n2o:session :room room
+    | nitro:redirect ["/app/index.htm?room=",room] end

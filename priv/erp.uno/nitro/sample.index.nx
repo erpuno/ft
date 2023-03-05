@@ -1,0 +1,36 @@
+module Sample.Index nitro
+
+fun room []:list   begin ret '/root' end
+fun room []:binary begin ret '/root' end
+fun room begin end
+
+fun chat message
+begin nx = n2o:session :room
+    | room = call room nx
+    | user = n2o:user
+    | x = kvs:writer room
+    | y = KVS.writer{args={:msg,kvs:seq,user:var,message:var}}
+    | z = kvs:add y
+    | w = kvs:save z
+    | n2o:send {:topic,room} N2O.client{data={user,message}} end
+
+fun display {:msg,_,user:var,message:var}
+begin nitro:wire NITRO.jq{target=:message,method=[:focus,:select]}
+    | jse = nitro:jse message
+    | nitro:insert_top :history NITRO.message{body=[NITRO.author{body=user:var},jse]} end
+
+fun event :logout     begin n2o:user [] | nitro:redirect "/app/login.htm" end
+fun event :chat      begin message = nitro:q :message | call chat message end
+fun event {:client,{user,message}} begin call display {:msg,user,message} end
+fun event :init
+begin nx = n2o:session :room
+    | room:var = call room nx
+    | kvs:ensure KVS.writer{id=room}
+    | n2o:subscribe {:topic,room}
+    | n2o:subscribe {n2o.sid}
+    | nitro:update :upload  NITRO.upload
+    | nitro:update :heading NITRO.h2{id=:heading,body=room}
+    | nitro:update :logout  NITRO.button{id=:logout,body="Logout",postback=:logout}
+    | nitro:update :send    NITRO.butto{id=:send,body="Chat",postback=:chat,source=[:message]}
+    | messages = kvs:all room
+    | lists:map messages display end

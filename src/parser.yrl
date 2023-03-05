@@ -1,4 +1,4 @@
-% Максим Сохацький ДП "ІНФОТЕХ"
+% Максим Сохацький ERP/1
 mod -> 'module' name lib clauses : {module,name('$2'),fst('$3'),'$4'}.
 lib -> 'kvs' : '$1'.
 lib -> 'bpe' : '$1'.
