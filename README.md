@@ -234,9 +234,10 @@ begin (Cr,R):R,[] | (R,gwND):O,R | (gwND,Det):D,[] | (*,InC):A,To
 Mentions
 --------
 
-* <a href="https://tonpa.guru/stream/2023/2023-02-01%20FormalTalk.htm">FormatTalk: ERP.UNO Compiler</a>
+* <a href="https://tonpa.guru/stream/2023/2023-02-01%20FormalTalk.htm">FormalTalk: Synrc ERP/1 Compiler</a>
+* <a href="https://tonpa.guru/stream/2023/2023-03-06%20Salesforce%20Apex%20vs%20FT.htm">Salesforce Apex vs Synrc FormalTalk</a>
 
 Credits
 -------
 
-* Максим Сохацький, ДП "ІНФОТЕХ"
+* Максим Сохацький
